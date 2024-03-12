@@ -1,0 +1,24 @@
+.container-fluid{
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    background-color: #FD6C00;
+}
+.nav-pills li a:hover {
+    background-color: #FD6C00;
+    cursor: pointer;
+}
+.sidebar-cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.dropdown-item {
+    cursor: pointer;
+}
+
+.dropdown-menu a:hover{
+    color: rgb(130, 14, 238);
+}
