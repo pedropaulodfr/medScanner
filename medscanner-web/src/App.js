@@ -20,8 +20,6 @@ function App() {
       <Router>
         <Routes>
           <Route element={<PrivateRoutes />}>
-            {/* <Route element={<Admin component={<Home />} />} path='/home' /> */}
-            {/* <Route element={<Admin component={<CartaoControle />} />} path='/card' /> */}
             <Route path="/home" element={<RequireAuth><Admin component={<Home />} /></RequireAuth>} />
             <Route path="/card" element={<RequireAuth><Admin component={<CartaoControle />} /></RequireAuth>} />
           </Route>

@@ -4,8 +4,6 @@ const api = axios.create({
     baseURL: process.env.REACT_APP_API
 });
 
-console.log("api", process.env.REACT_APP_API);
-
 export const useApi = () => ({
     validateToken: async (token) => {
         const response = await api.post('/validate', { token });

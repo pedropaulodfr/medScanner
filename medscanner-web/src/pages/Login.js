@@ -98,8 +98,8 @@ export const Login = () => {
                   <Button
                     onClick={handleLogin}
                     style={{
-                      backgroundColor: "#6700c8",
-                      borderColor: "#3f007b",
+                      backgroundColor: "#F25D07",
+                      borderColor: "#ff5e00da",
                       width: "8vw",
                       margin: "15px",
                     }}

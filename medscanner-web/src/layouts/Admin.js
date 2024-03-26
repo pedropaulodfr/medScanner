@@ -1,11 +1,6 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState } from "react";
-
+import './Admin.css';
 import Sidebar from "../components/Sidebar/Sidebar";
-import Home from "../pages/Home";
-import CartaoControle from "../pages/CartaoControle";
-
-import PrivateRoutes from '../routes/PrivateRoutes';
 
 export default function Admin({ component }) {
   const [sidebarStatus, setSidebarStatus] = useState(false);
@@ -15,15 +10,9 @@ export default function Admin({ component }) {
     <div className="admin">
       <Sidebar sidebarStatus={setSidebarStatus}></Sidebar>
       <div
-        className="component-home"
-        style={
-          !sidebarStatus ? { paddingLeft: "230px" } : { paddingLeft: "0px" }
-        }
+        className={`component-home ${!sidebarStatus ? "sidebar-open" : ""}`}
       >
         {component}
-        {/* <Home></Home> */}
-        {/* <CartaoControle></CartaoControle> */}
-
       </div>
     </div>
   );

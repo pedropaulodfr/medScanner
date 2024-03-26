@@ -1,0 +1,15 @@
+h1 {
+    font-family: "Dosis", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 800;
+    font-style: normal;
+}
+
+.title-page {
+    color: #212529;
+    padding: 20px;
+}
+
+tr, td {
+    font-family: "Roboto", sans-serif;
+}

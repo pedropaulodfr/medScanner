@@ -22,10 +22,14 @@ export default function CartaoControle() {
       <Row className="justify-content-md-center">
         <Col></Col>
         <Col>
-            <h1>Cartão de Controle</h1>
-            <TabelaListagem headers={headers} />
+            <h1 className="title-page">Cartão de Controle</h1>
         </Col>
         <Col></Col>
+      </Row>
+      <Row>
+        <Col>
+          <TabelaListagem headers={headers} />
+        </Col>
       </Row>
     </Container>
   );
