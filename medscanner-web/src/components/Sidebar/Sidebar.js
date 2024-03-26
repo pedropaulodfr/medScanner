@@ -1,18 +1,25 @@
 import { useContext, useState } from "react";
 import CloseButton from "react-bootstrap/CloseButton";
 import menus from "../../routes/MenusSidebar";
+import { useAuth } from "../../contexts/Auth/AuthContext";
 
 import "./Sidebar.css";
+import Loading from "../Loading/Loading";
 
 function Sidebar({ sidebarStatus }) {
+  const auth = useAuth();
+
   const [sidebarClose, setSidebarClose] = useState(false);
+  
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
     window.location.href = "/private";
   };
 
   const handleLogout = async () => {
-    window.location.href = "/private";
+    setLoading(true);
+    await auth.logout();
   };
 
   const handleHome = async (path) => {
@@ -32,6 +39,7 @@ function Sidebar({ sidebarStatus }) {
 
   return (
     <div className="container-fluid col-auto">
+      {loading && <Loading />}
       {!sidebarClose ? (
         <div className="row">
           <div className="bg-dark col-auto min-vh-100 d-flex justify-content-between flex-column">
@@ -42,7 +50,7 @@ function Sidebar({ sidebarStatus }) {
                     style={{ margin: "15px" }}
                     className="ms-4 fs-4 d-none d-sm-inline"
                   >
-                    Rastreador
+                    Painel
                   </span>
                 </a>
                 <CloseButton variant="white" onClick={handleSidebarStatus} />

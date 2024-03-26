@@ -12,6 +12,7 @@ import CartaoControle from './pages/CartaoControle';
 
 import menus from './routes/MenusSidebar';
 import { Login } from './pages/Login';
+import RequireAuth from './contexts/Auth/RequireAuth';
 
 function App() {
   return (
@@ -19,8 +20,10 @@ function App() {
       <Router>
         <Routes>
           <Route element={<PrivateRoutes />}>
-            <Route element={<Admin component={<Home />} />} path='/home' />
-            <Route element={<Admin component={<CartaoControle />} />} path='/card' />
+            {/* <Route element={<Admin component={<Home />} />} path='/home' /> */}
+            {/* <Route element={<Admin component={<CartaoControle />} />} path='/card' /> */}
+            <Route path="/home" element={<RequireAuth><Admin component={<Home />} /></RequireAuth>} />
+            <Route path="/card" element={<RequireAuth><Admin component={<CartaoControle />} /></RequireAuth>} />
           </Route>
           <Route element={<Login />} path='/' />
         </Routes>

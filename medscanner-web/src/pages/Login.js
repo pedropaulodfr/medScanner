@@ -7,9 +7,10 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
+import { useAuth } from "../contexts/Auth/AuthContext"
 
 export const Login = () => {
-  const auth = useState(null);
+  const auth = useAuth();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -27,18 +28,18 @@ export const Login = () => {
   const handleLogin = async () => {
     if (email && password) {
       setLoading(true);
-      await auth.signin(email, password).then((result) => {
+      await auth.login(email, password).then((result) => {
         if (result.statusCode !== 200) {
-          console.log(result);
           setLoading(false);
           showMessage(
             "Aviso",
             "Usuário ou senha inválidos. Tente novamente!",
-            "error"
+            "error",
+            null
           );
         } else {
           setLoading(false);
-          navigate("/");
+          navigate("/home");
         }
       });
     }
