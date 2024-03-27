@@ -6,7 +6,7 @@ function TabelaListagem({ headers = [], itens = [] }) {
 
   return (
     <>
-      <Table striped bordered hover >
+      <Table striped bordered hover responsive="lg" >
         <thead>
           <tr>
             {headers.map((header, index) => (
@@ -18,7 +18,7 @@ function TabelaListagem({ headers = [], itens = [] }) {
           {itens.map((item, rowIndex) => (
             <tr key={rowIndex}>
               {headers.map((header, colIndex) => (
-                <td style={{ backgroundColor: rowIndex % 2 == 0 ? "#EBEBF0" : "#F2F0D8" }} key={colIndex}>{item[header.objectValue]}</td>
+                <td style={{ backgroundColor: rowIndex % 2 == 0 ? "#f9f9f9" : "#fffef2" }} key={colIndex}>{item[header.objectValue]}</td>
               ))}
             </tr>
           ))}

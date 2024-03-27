@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import CloseButton from "react-bootstrap/CloseButton";
 import menus from "../../routes/MenusSidebar";
 import { useAuth } from "../../contexts/Auth/AuthContext";
@@ -58,7 +58,6 @@ function Sidebar({ sidebarStatus }) {
               <hr className="text-secondary d-none d-sm-block" />
               <ul className="nav nav-pills flex-column mt-3 mt-sm-0">
                 {menus.map((menu, key) => {
-                  {console.log(menu);}
                   return (<li className="nav-item text-while fs-4 my-1 py-2 py-sm-0">
                     <a
                       onClick={() => handleHome(menu.path)}
