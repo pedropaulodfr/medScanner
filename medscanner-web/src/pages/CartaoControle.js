@@ -60,7 +60,7 @@ export default function CartaoControle() {
         setLoading(true);
         await db.get("/card").then((result) => {
           setDadosMedicamentos(result.data);
-          set_DadosMedicamentos(result.data)
+          set_DadosMedicamentos(result.data);
           setLoading(false);
         });
       } catch (error) {
@@ -139,10 +139,10 @@ export default function CartaoControle() {
   };
 
   const handleLimparFiltro = () => {
-    setMedicamentoFiltro("")
-    setProfissionalFiltro("")
-    setDataInicialFiltro("")
-    setDataFinalFiltro("")
+    setMedicamentoFiltro("");
+    setProfissionalFiltro("");
+    setDataInicialFiltro("");
+    setDataFinalFiltro("");
     setDadosMedicamentos(_dadosMedicamentos);
     setIsFiltro(false);
   };
@@ -162,93 +162,109 @@ export default function CartaoControle() {
           <h4>Filtros</h4>
         </Col>
       </Row>
-      <Row>
-        <Col md>
-          <Form.Group className="mb-3">
-            <Form.Label>Medicamento</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder=""
-              value={medicamentoFiltro}
-              onChange={(e) => {
-                handleMedicamentoChange(e);
-              }}
-            />
-          </Form.Group>
-        </Col>
-        <Col md>
-          <Form.Group className="mb-3">
-            <Form.Label>Profissional</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder=""
-              value={profissionalFiltro}
-              onChange={(e) => {
-                handleProfissionalChange(e);
-              }}
-            />
-          </Form.Group>
-        </Col>
-        <Col md>
-          <Form.Group controlId="date" bsSize="large">
-            <Form.Label>Data Inicial</Form.Label>
-            <Form.Control
-              type="date"
-              style={{ width: "100%" }}
-              value={dataInicialFiltro}
-              onChange={(e) => {
-                handleDataInicialChange(e);
-              }}
-            />
-          </Form.Group>
-        </Col>
-        <Col md>
-          <Form.Group controlId="date" bsSize="large">
-            <Form.Label>Data Final</Form.Label>
-            <Form.Control
-              type="date"
-              style={{ width: "100%" }}
-              value={dataFinalFiltro}
-              onChange={(e) => {
-                handleDataFinalChange(e);
-              }}
-            />
-          </Form.Group>
-        </Col>
-      </Row>
-      <Row>
-        <Col></Col>
-        <Col></Col>
-        <Col className="d-flex justify-content-center" xs={5}>
-          <Button
-            className="m-3 text-white"
-            variant="info"
-            style={{ backgroundColor: "#F2C207", borderColor: "#F2C207" }}
-            onClick={handleFiltro}
-          >
-            <i class="bi bi-funnel"></i> Filtrar
-          </Button>{" "}
-          {isFiltro && (
-            <>
-              <Button
-                className="m-3 text-white"
-                variant="info"
-                style={{ backgroundColor: "#F20707", borderColor: "#F20707" }}
-                onClick={handleLimparFiltro}
-              >
-                <i class="bi bi-eraser"></i> Limpar Filtros
-              </Button>{" "}
-            </>
-          )}
-        </Col>
-        <Col></Col>
-        <Col></Col>
-      </Row>
-      <Row className="justify-content-center">
-        <Col>
-          <TabelaListagem headers={headers} itens={dadosMedicamentos} />
-        </Col>
-      </Row>
+      <Form
+        className="text-black mb-4 shadow p-3 mb-5 bg-white rounded"
+        style={{
+          borderRadius: "15px",
+          padding: "20px",
+        }}
+      >
+        <Row className="filtros">
+          <Col md>
+            <Form.Group className="mb-3">
+              <Form.Label>Medicamento</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder=""
+                value={medicamentoFiltro}
+                onChange={(e) => {
+                  handleMedicamentoChange(e);
+                }}
+              />
+            </Form.Group>
+          </Col>
+          <Col md>
+            <Form.Group className="mb-3">
+              <Form.Label>Profissional</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder=""
+                value={profissionalFiltro}
+                onChange={(e) => {
+                  handleProfissionalChange(e);
+                }}
+              />
+            </Form.Group>
+          </Col>
+          <Col md>
+            <Form.Group controlId="date" bsSize="large">
+              <Form.Label>Data Inicial</Form.Label>
+              <Form.Control
+                type="date"
+                style={{ width: "100%" }}
+                value={dataInicialFiltro}
+                onChange={(e) => {
+                  handleDataInicialChange(e);
+                }}
+              />
+            </Form.Group>
+          </Col>
+          <Col md>
+            <Form.Group controlId="date" bsSize="large">
+              <Form.Label>Data Final</Form.Label>
+              <Form.Control
+                type="date"
+                style={{ width: "100%" }}
+                value={dataFinalFiltro}
+                onChange={(e) => {
+                  handleDataFinalChange(e);
+                }}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
+        <Row>
+          <Col></Col>
+          <Col></Col>
+          <Col className="d-flex justify-content-center" xs={5}>
+            <Button
+              className="mb-0 mt-0 text-white"
+              variant="info"
+              style={{ backgroundColor: "#F2C207", borderColor: "#F2C207" }}
+              onClick={handleFiltro}
+            >
+              <i class="bi bi-funnel"></i> Filtrar
+            </Button>{" "}
+            {isFiltro && (
+              <>
+                <Button
+                  className="m-3 mb-0 mt-0 text-white"
+                  variant="info"
+                  style={{ backgroundColor: "#F20707", borderColor: "#F20707" }}
+                  onClick={handleLimparFiltro}
+                >
+                  <i class="bi bi-eraser"></i> Limpar Filtros
+                </Button>{" "}
+              </>
+            )}
+          </Col>
+          <Col></Col>
+          <Col></Col>
+        </Row>
+      </Form>
+      <Form
+        className="text-black mb-4 shadow p-3 mb-5 bg-white rounded"
+        style={{
+          borderRadius: "15px",
+          padding: "20px",
+        }}
+      >
+        <Row className="justify-content-center">
+          <Col>
+            <TabelaListagem headers={headers} itens={dadosMedicamentos} />
+          </Col>
+        </Row>
+      </Form>
     </Container>
   );
 }
