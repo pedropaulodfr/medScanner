@@ -1,5 +1,6 @@
 import Home from "../pages/Home"
 import CartaoControle from "../pages/CartaoControle";
+import Dashboard from "../pages/Dashboard";
 
 var menus = [
     {
@@ -7,6 +8,12 @@ var menus = [
         name: "Home",
         icon: "bi bi-house",
         component: Home
+      },
+      {
+        path: "/dashboard",
+        name: "Dashboard",
+        icon: "bi bi-ui-checks-grid",
+        component: Dashboard
       },
       {
         path: "/card",

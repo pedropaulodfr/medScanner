@@ -47,7 +47,7 @@ export const Login = () => {
 
   return (
     <div
-      className="login d-flex justify-content-center align-items-center"
+      className="login d-flex justify-content-center align-items-center gradiente"
       style={{ minHeight: "100vh" }}
     >
       {loading && <Loading />}
@@ -55,8 +55,8 @@ export const Login = () => {
         <Row className="justify-content-md-center">
           <Col xs={6} md={4}>
             <Form
-              className="text-white bg-dark"
-              style={{  borderRadius: "15px", padding: "20px" }}
+              className=""
+              style={{  borderRadius: "15px", padding: "20px", backgroundColor: "#D9E9E4", color: "#008952" }}
             >
               <h2>Bem Vindo!</h2>
               <Form.Group
@@ -98,8 +98,9 @@ export const Login = () => {
                   <Button
                     onClick={handleLogin}
                     style={{
-                      backgroundColor: "#F25D07",
-                      borderColor: "#ff5e00da",
+                      backgroundColor: "#3F8576",
+                      borderColor: "#D6EDE7",
+                      color: "#ffffff",
                       width: "8vw",
                       margin: "15px",
                     }}

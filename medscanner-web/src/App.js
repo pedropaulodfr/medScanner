@@ -9,6 +9,7 @@ import 'bootstrap/js/dist/dropdown'
 import Home from './pages/Home'
 import Admin from './layouts/Admin'
 import CartaoControle from './pages/CartaoControle';
+import Dashboard from './pages/Dashboard';
 
 import menus from './routes/MenusSidebar';
 import { Login } from './pages/Login';
@@ -22,6 +23,7 @@ function App() {
           <Route element={<PrivateRoutes />}>
             <Route path="/home" element={<RequireAuth><Admin component={<Home />} /></RequireAuth>} />
             <Route path="/card" element={<RequireAuth><Admin component={<CartaoControle />} /></RequireAuth>} />
+            <Route path="/dashboard" element={<RequireAuth><Admin component={<Dashboard />} /></RequireAuth>} />
           </Route>
           <Route element={<Login />} path='/' />
         </Routes>

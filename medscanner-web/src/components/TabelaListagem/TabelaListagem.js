@@ -10,7 +10,7 @@ function TabelaListagem({ headers = [], itens = [] }) {
         <thead>
           <tr>
             {headers.map((header, index) => (
-              <th key={index} style={{ backgroundColor: "#F25D07", color: "#F2F0D8" }}>{header.value}</th>
+              <th key={index} style={{ backgroundColor: "#008952", color: "#F2F0D8" }}>{header.value}</th>
             ))}
           </tr>
         </thead>

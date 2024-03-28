@@ -230,9 +230,10 @@ export default function CartaoControle() {
             <Button
               className="mb-0 mt-0 text-white"
               variant="info"
-              style={{ backgroundColor: "#F2C207", borderColor: "#F2C207" }}
+              style={{ backgroundColor: "#3F8576", borderColor: "#3F8576" }}
+
               onClick={handleFiltro}
-            >
+              >
               <i class="bi bi-funnel"></i> Filtrar
             </Button>{" "}
             {isFiltro && (
@@ -240,7 +241,8 @@ export default function CartaoControle() {
                 <Button
                   className="m-3 mb-0 mt-0 text-white"
                   variant="info"
-                  style={{ backgroundColor: "#F20707", borderColor: "#F20707" }}
+                  style={{ backgroundColor: "#50BF84", borderColor: "#50BF84" }}
+
                   onClick={handleLimparFiltro}
                 >
                   <i class="bi bi-eraser"></i> Limpar Filtros

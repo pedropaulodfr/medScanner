@@ -6,7 +6,7 @@ export default function Loading() {
     return (
         <div className="carregando">
             <div className="box">
-                <Spinner animation="grow" style={{ color: "#FD6C00" }}/>
+                <Spinner animation="grow" style={{ color: "#50BF84" }}/>
             </div>
         </div>
     )

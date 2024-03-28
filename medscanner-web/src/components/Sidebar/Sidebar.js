@@ -5,6 +5,7 @@ import { useAuth } from "../../contexts/Auth/AuthContext";
 
 import "./Sidebar.css";
 import Loading from "../Loading/Loading";
+import Logo from "../../assets/medscan-min-white.png"
 
 function Sidebar({ sidebarStatus }) {
   const auth = useAuth();
@@ -28,7 +29,6 @@ function Sidebar({ sidebarStatus }) {
   };
 
   const handleSidebarStatus = () => {
-    console.log("aqui");
     setSidebarClose(!sidebarClose);
     sidebarStatus(!sidebarClose);
   };
@@ -42,7 +42,7 @@ function Sidebar({ sidebarStatus }) {
       {loading && <Loading />}
       {!sidebarClose ? (
         <div className="row">
-          <div className="bg-dark col-auto min-vh-100 d-flex justify-content-between flex-column">
+          <div className="col-auto min-vh-100 d-flex justify-content-between flex-column" style={{ backgroundColor: "#008952" }}>
             <div className="">
               <div className="sidebar-cabecalho">
                 <a className="text-decoration-none text-white d-none d-sm-inline d-flex align-itemcenter ms-4 mt-3">
@@ -50,12 +50,12 @@ function Sidebar({ sidebarStatus }) {
                     style={{ margin: "15px" }}
                     className="ms-4 fs-4 d-none d-sm-inline"
                   >
-                    Painel
+                    <img src={Logo} style={{maxWidth: "70px"}}></img>
                   </span>
                 </a>
                 <CloseButton variant="white" onClick={handleSidebarStatus} />
               </div>
-              <hr className="text-secondary d-none d-sm-block" />
+              <hr className="text-white d-none d-sm-block" />
               <ul className="nav nav-pills flex-column mt-3 mt-sm-0">
                 {menus.map((menu, key) => {
                   return (<li className="nav-item text-while fs-4 my-1 py-2 py-sm-0">

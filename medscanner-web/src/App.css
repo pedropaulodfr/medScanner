@@ -13,3 +13,13 @@ h1 {
 tr, td {
     font-family: "Roboto", sans-serif;
 }
+
+.gradiente {
+    background-image: linear-gradient(to left, rgba(0, 198, 233, 0.219), rgba(0, 137, 82, 0.219)), url("./assets/background.png") ;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    background-size: cover;
+    background-origin: center;
+    background-clip: content-box;
+}
