@@ -4,7 +4,6 @@ import Sidebar from "../components/Sidebar/Sidebar";
 
 export default function Admin({ component }) {
   const [sidebarStatus, setSidebarStatus] = useState(false);
-  console.log("sidebarStatus", sidebarStatus);
 
   return (
     <div className="admin">

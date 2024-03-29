@@ -151,11 +151,9 @@ export default function CartaoControle() {
     <Container>
       {loading && <Loading />}
       <Row className="justify-content-md-center">
-        <Col></Col>
-        <Col>
+        <Col className="d-flex justify-content-center" >
           <h1 className="title-page">Cartão de Controle</h1>
         </Col>
-        <Col></Col>
       </Row>
       <Row>
         <Col md>

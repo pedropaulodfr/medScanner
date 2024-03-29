@@ -13,12 +13,7 @@ export default function Home() {
 
   return (
     <Container>
-      <Row>
-        <Col></Col>
-        <Col></Col>
-      </Row>
       <Row className="justify-content-md-center">
-        <Col></Col>
         <Col>
           <div
             className="logo"
@@ -31,7 +26,6 @@ export default function Home() {
             <img src={Logotipo} width={250} />
           </div>
         </Col>
-        <Col></Col>
       </Row>
       <hr></hr>
       <Row>
@@ -53,14 +47,11 @@ export default function Home() {
         <Col xs={3}></Col>
       </Row>
       <Row className="justify-content-md-center mt-5">
-        <Col></Col>
         <Col md="auto">
           <h4 style={{ color: "#00C7E9" }}>O que deseja fazer?</h4>
         </Col>
-        <Col></Col>
       </Row>
       <Row className="justify-content-md-center">
-        <Col></Col>
         <Col md="auto">
           <Button variant="outline-success" className="m-2 mt-0.5" onClick={() => {handleCard("dashboard")}}>
             Dashboard
@@ -69,7 +60,6 @@ export default function Home() {
             Verificar Cartão
           </Button>
         </Col>
-        <Col></Col>
       </Row>
     </Container>
   );
