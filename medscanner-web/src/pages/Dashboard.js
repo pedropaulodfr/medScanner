@@ -17,10 +17,16 @@ import { showMessage } from "../helpers/message";
 // Importar Componentes
 import { Calendario } from "../components/Graficos/Calendario/Calendario";
 import { Colunas } from "../components/Graficos/Colunas/Colunas";
+import { Card } from "react-bootstrap";
+import Cards from "../components/Cards/Cards";
+import { render } from "@testing-library/react";
+import Modals from "../components/Modals/Modals";
+import TabelaListagem from "../components/TabelaListagem/TabelaListagem";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [dadosMedicamentos, setDadosMedicamentos] = useState([]);
+  const [cliqueCard, setCliqueCard] = useState(false);
 
   const db = axios.create({
     baseURL: "http://localhost:8000",
@@ -78,16 +84,64 @@ export default function Dashboard() {
     }
   );
 
+  // Cabeçalho e dados para testar o modal
+  const headersTesteModal = [
+    { value: "Medicamento", objectValue: "medicamento" },
+    { value: "Data", objectValue: "data" },
+  ]
+
+  const dadosMedicamentosTesteModal = [
+    {"medicamento": "Memantina", "data": "03/04/2024"},
+    {"medicamento": "Sertralina", "data": "03/04/2024"},
+  ]
+  //-------------------------------------------------
+
+  const [titleModal, setTitleModal] = useState("");
+  const [textModal, setTextModal] = useState();
+
+  // Definir a informação mostrada ao clicar em cada card
+  const ModalElements = (card) => {
+    var _titleModal = "";
+    var _textModal;
+
+    switch (card) {
+      case 1:
+        _titleModal = "Medicamentos próximos ao retorno"
+        _textModal = <TabelaListagem headers={headersTesteModal} itens={dadosMedicamentosTesteModal} />
+        break;
+      
+        case 2:
+        _titleModal = "Quantidade de medicamentos"
+        _textModal = "1000"
+        
+      default:
+        break;
+      }
+      setTitleModal(_titleModal);
+      setTextModal(_textModal);
+  }
+
   return (
     <Container>
       {loading && <Loading />}
+      {cliqueCard && <Modals close={setCliqueCard} title={titleModal} text={textModal} />}
       <Row className="justify-content-md-center">
         <Col className="d-flex justify-content-center" >
           <h1 className="title-page">Dashboard</h1>
         </Col>
       </Row>
+      <Form className="text-black mb-4 shadow p-3 mb-5 bg-white rounded d-flex justify-content-center" style={{borderRadius: "15px",padding: "20px",}} >
+        <Row>
+          <Col onClick={() => {ModalElements(1)}}>
+            <Cards titleHeader="Próximo ao retorno" titleCard="5" text="Clique para ver detalhes" textAlign="center" cursorType="pointer" click={setCliqueCard} />
+          </Col>
+          <Col onClick={() => {ModalElements(2)}}>
+            <Cards titleHeader="Quantidade de Medicamentos" titleCard="1000" textAlign="center" cursorType="pointer" click={setCliqueCard} />
+          </Col>
+        </Row>
+      </Form>
       <Form className="text-black mb-4 shadow p-3 mb-5 bg-white rounded" style={{borderRadius: "15px",padding: "20px",}} >
-      <Row>
+        <Row>
           <h3>Datas de Retorno</h3>
         </Row>
         <Row>
