@@ -18,7 +18,19 @@ var menus = [
       {
         path: "/card",
         name: "Cartão de Controle",
+        icon: "bi bi-table",
+        component: CartaoControle
+      },
+      {
+        path: "/receituario",
+        name: "Receituário",
         icon: "bi bi-card-list",
+        component: CartaoControle
+      },
+      {
+        path: "/relatorios",
+        name: "Relatórios",
+        icon: "bi bi-file-earmark",
         component: CartaoControle
       },
 ]

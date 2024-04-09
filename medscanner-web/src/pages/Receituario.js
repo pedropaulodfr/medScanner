@@ -14,40 +14,23 @@ import Form from "react-bootstrap/Form";
 import Loading from "../components/Loading/Loading";
 import { showMessage } from "../helpers/message";
 
-export default function CartaoControle() {
+export default function Receituario() {
   const [dadosMedicamentos, setDadosMedicamentos] = useState([]);
   const [_dadosMedicamentos, set_DadosMedicamentos] = useState([]);
   const [isFiltro, setIsFiltro] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const headers = [
-    { value: "Data", objectValue: "data" },
     { value: "Medicamento", objectValue: "medicamento" },
-    { value: "Quantidade", objectValue: "quantidade" },
-    { value: "Retorno", objectValue: "dataRetorno" },
-    { value: "Profissional", objectValue: "profissional" },
+    { value: "Dose", objectValue: "dose" },
+    { value: "Frequência", objectValue: "frequencia" },
   ];
 
   // Filtros
   const [medicamentoFiltro, setMedicamentoFiltro] = useState("");
-  const [profissionalFiltro, setProfissionalFiltro] = useState("");
-  const [dataInicialFiltro, setDataInicialFiltro] = useState("");
-  const [dataFinalFiltro, setDataFinalFiltro] = useState("");
 
   const handleMedicamentoChange = (event) => {
     setMedicamentoFiltro(event.target.value);
-  };
-
-  const handleProfissionalChange = (event) => {
-    setProfissionalFiltro(event.target.value);
-  };
-
-  const handleDataInicialChange = (event) => {
-    setDataInicialFiltro(event.target.value);
-  };
-
-  const handleDataFinalChange = (event) => {
-    setDataFinalFiltro(event.target.value);
   };
 
   const db = axios.create({
@@ -58,7 +41,13 @@ export default function CartaoControle() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        await db.get("/card").then((result) => {
+        await db.get("/posologia").then((result) => {
+
+        result.data.map(m => {
+            m.dose = m.dose > 1 ? `${m.dose} ${m.tipo}s` : `${m.dose} ${m.tipo}`;
+            m.frequencia = m.frequencia > 1 ? `${m.frequencia} vezes por ${m.tempo} pela ${m.periodo}` : `${m.frequencia} vez por ${m.tempo} pela ${m.periodo}`;
+        })
+
           setDadosMedicamentos(result.data);
           set_DadosMedicamentos(result.data);
           setLoading(false);
@@ -78,10 +67,7 @@ export default function CartaoControle() {
 
     // Verificar se algum filtro foi preenchido
     if (
-      medicamentoFiltro === "" &&
-      profissionalFiltro === "" &&
-      dataInicialFiltro === "" &&
-      dataFinalFiltro === ""
+      medicamentoFiltro === ""
     ) {
       showMessage("Aviso", "Informe ao menos um dos campos!", "error", null);
       return;
@@ -101,48 +87,12 @@ export default function CartaoControle() {
       });
     }
 
-    if (profissionalFiltro.trim() !== "") {
-      dadosFiltrados = dadosFiltrados.filter((item) =>
-        item.profissional
-          .toLowerCase()
-          .includes(profissionalFiltro.trim().toLowerCase())
-      );
-      dadosFiltrados.sort((a, b) => {
-        return a.profissional - b.profissional;
-      });
-    }
-
-    if (dataInicialFiltro.trim() !== "") {
-      const dataInicial = new Date(dataInicialFiltro);
-      dadosFiltrados = dadosFiltrados.filter(
-        (item) =>
-          moment(item.data, "DD/MM/YYYY") >= moment(dataInicial, "YYYY-MM-DD")
-      );
-      dadosFiltrados.sort((a, b) => {
-        return moment(a.data, "DD/MM/YYYY") - moment(b.data, "DD/MM/YYYY");
-      });
-    }
-
-    if (dataFinalFiltro.trim() !== "") {
-      const dataFinal = new Date(dataFinalFiltro);
-      dadosFiltrados = dadosFiltrados.filter(
-        (item) =>
-          moment(item.data, "DD/MM/YYYY") < moment(dataFinal, "YYYY-MM-DD")
-      );
-      dadosFiltrados.sort((a, b) => {
-        return moment(a.data, "DD/MM/YYYY") - moment(b.data, "DD/MM/YYYY");
-      });
-    }
-
     setIsFiltro(true);
     setDadosMedicamentos(dadosFiltrados);
   };
 
   const handleLimparFiltro = () => {
     setMedicamentoFiltro("");
-    setProfissionalFiltro("");
-    setDataInicialFiltro("");
-    setDataFinalFiltro("");
     setDadosMedicamentos(_dadosMedicamentos);
     setIsFiltro(false);
   };
@@ -152,7 +102,7 @@ export default function CartaoControle() {
       {loading && <Loading />}
       <Row className="justify-content-md-center">
         <Col className="d-flex justify-content-center" >
-          <h1 className="title-page">Cartão de Controle</h1>
+          <h1 className="title-page">Receituário</h1>
         </Col>
       </Row>
       <Row>
@@ -168,7 +118,7 @@ export default function CartaoControle() {
         }}
       >
         <Row className="filtros">
-          <Col md>
+          <Col md="3">
             <Form.Group className="mb-3">
               <Form.Label>Medicamento</Form.Label>
               <Form.Control
@@ -181,55 +131,11 @@ export default function CartaoControle() {
               />
             </Form.Group>
           </Col>
-          <Col md>
-            <Form.Group className="mb-3">
-              <Form.Label>Profissional</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder=""
-                value={profissionalFiltro}
-                onChange={(e) => {
-                  handleProfissionalChange(e);
-                }}
-              />
-            </Form.Group>
-          </Col>
-          <Col md>
-            <Form.Group controlId="date" bsSize="large">
-              <Form.Label>Data Inicial</Form.Label>
-              <Form.Control
-                type="date"
-                style={{ width: "100%" }}
-                value={dataInicialFiltro}
-                onChange={(e) => {
-                  handleDataInicialChange(e);
-                }}
-              />
-            </Form.Group>
-          </Col>
-          <Col md>
-            <Form.Group controlId="date" bsSize="large">
-              <Form.Label>Data Final</Form.Label>
-              <Form.Control
-                type="date"
-                style={{ width: "100%" }}
-                value={dataFinalFiltro}
-                onChange={(e) => {
-                  handleDataFinalChange(e);
-                }}
-              />
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row>
-          <Col></Col>
-          <Col></Col>
-          <Col className="d-flex justify-content-center" xs={5}>
+          <Col className=" mt-4" xs={0}>
             <Button
-              className="mb-0 mt-0 text-white"
+              className="mb-0 mt-2 text-white"
               variant="info"
               style={{ backgroundColor: "#3F8576", borderColor: "#3F8576" }}
-
               onClick={handleFiltro}
               >
               <i class="bi bi-funnel"></i> Filtrar
@@ -237,10 +143,9 @@ export default function CartaoControle() {
             {isFiltro && (
               <>
                 <Button
-                  className="m-3 mb-0 mt-0 text-white"
+                  className="m-3 mb-0 mt-2 text-white"
                   variant="info"
                   style={{ backgroundColor: "#50BF84", borderColor: "#50BF84" }}
-
                   onClick={handleLimparFiltro}
                 >
                   <i class="bi bi-eraser"></i> Limpar Filtros
@@ -248,6 +153,10 @@ export default function CartaoControle() {
               </>
             )}
           </Col>
+        </Row>
+        <Row>
+          <Col></Col>
+          <Col></Col>
           <Col></Col>
           <Col></Col>
         </Row>
