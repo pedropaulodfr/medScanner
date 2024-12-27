@@ -17,6 +17,7 @@ import menus from './routes/MenusSidebar';
 import { Login } from './pages/Login';
 import RequireAuth from './contexts/Auth/RequireAuth';
 import Relatorios from './pages/Relatorios';
+import Medicamentos from './pages/Medicamentos/Medicamentos';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             <Route path="/card" element={<RequireAuth><Admin component={<CartaoControle />} /></RequireAuth>} />
             <Route path="/dashboard" element={<RequireAuth><Admin component={<Dashboard />} /></RequireAuth>} />
             <Route path="/receituario" element={<RequireAuth><Admin component={<Receituario />} /></RequireAuth>} />
+            <Route path="/medicamentos" element={<RequireAuth><Admin component={<Medicamentos />} /></RequireAuth>} />
             <Route path="/relatorios" element={<RequireAuth><Admin component={<Relatorios />} /></RequireAuth>} />
           </Route>
           <Route element={<Login />} path='/' />

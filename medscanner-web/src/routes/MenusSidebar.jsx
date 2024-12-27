@@ -1,6 +1,7 @@
 import Home from "../pages/Home"
 import CartaoControle from "../pages/CartaoControle";
 import Dashboard from "../pages/Dashboard";
+import Medicamentos from "../pages/Medicamentos/Medicamentos";
 
 var menus = [
     {
@@ -26,6 +27,12 @@ var menus = [
         name: "Receituário",
         icon: "bi bi-card-list",
         component: CartaoControle
+      },
+      {
+        path: "/medicamentos",
+        name: "Medicamentos",
+        icon: "bi bi-capsule",
+        component: Medicamentos
       },
       {
         path: "/relatorios",

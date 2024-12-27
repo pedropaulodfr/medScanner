@@ -11,9 +11,9 @@ export const useApi = () => ({
             user: {username : response.data.username, email: response.data.email}
         };
     },
-    signin: async (email, password) => {
+    signin: async (email, senha) => {
         try {
-            const response = await api.post('/login', { email, password })
+            const response = await api.post('/login', { email, senha })
             .then((result) => {
                 return result
             })
