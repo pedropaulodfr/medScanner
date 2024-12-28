@@ -1,8 +1,9 @@
 import { useState } from "react";
 import './Admin.css';
 import Sidebar from "../components/Sidebar/Sidebar";
+import Home from "../pages/Home";
 
-export default function Admin({ component }) {
+export default function Admin({ component: Component }) {
   const [sidebarStatus, setSidebarStatus] = useState(false);
 
   return (
@@ -11,7 +12,7 @@ export default function Admin({ component }) {
       <div
         className={`component-home ${!sidebarStatus ? "sidebar-open" : ""}`}
       >
-        {component}
+        <Component />
       </div>
     </div>
   );

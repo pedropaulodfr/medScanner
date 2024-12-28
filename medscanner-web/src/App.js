@@ -7,17 +7,11 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 import 'bootstrap/js/dist/dropdown'
 
 // Pages
-import Home from './pages/Home'
 import Admin from './layouts/Admin'
-import CartaoControle from './pages/CartaoControle';
-import Dashboard from './pages/Dashboard';
-import Receituario from './pages/Receituario';
 
 import menus from './routes/MenusSidebar';
 import { Login } from './pages/Login';
 import RequireAuth from './contexts/Auth/RequireAuth';
-import Relatorios from './pages/Relatorios';
-import Medicamentos from './pages/Medicamentos/Medicamentos';
 
 function App() {
   return (
@@ -25,14 +19,27 @@ function App() {
       <Router>
         <Routes>
           <Route element={<PrivateRoutes />}>
-            <Route path="/home" element={<RequireAuth><Admin component={<Home />} /></RequireAuth>} />
-            <Route path="/card" element={<RequireAuth><Admin component={<CartaoControle />} /></RequireAuth>} />
-            <Route path="/dashboard" element={<RequireAuth><Admin component={<Dashboard />} /></RequireAuth>} />
-            <Route path="/receituario" element={<RequireAuth><Admin component={<Receituario />} /></RequireAuth>} />
-            <Route path="/medicamentos" element={<RequireAuth><Admin component={<Medicamentos />} /></RequireAuth>} />
-            <Route path="/relatorios" element={<RequireAuth><Admin component={<Relatorios />} /></RequireAuth>} />
+            {menus.map((menu, key) => {
+              if(!menu.submenus) {
+                return (
+                  <Route
+                    key={key}
+                    path={menu.path}
+                    element={<RequireAuth><Admin component={menu.component} /></RequireAuth>}
+                  />
+                )
+              } else {
+                return menu.submenus.map((submenu, subKey) => (
+                  <Route
+                    key={subKey}
+                    path={submenu.path}
+                    element={<RequireAuth><Admin component={submenu.component} /></RequireAuth>}
+                  />
+                ));
+              }
+            })}
           </Route>
-          <Route element={<Login />} path='/' />
+          <Route path="/" element={<Login />} />
         </Routes>
       </Router>
     </div>

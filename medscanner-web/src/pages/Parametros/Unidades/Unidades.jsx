@@ -5,42 +5,37 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import TabelaListagem from "../../components/TabelaListagem/TabelaListagem";
 import Form from "react-bootstrap/Form";
 
 // Utils e helpers
-import Loading from "../../components/Loading/Loading";
-import { showMessage } from "../../helpers/message";
-import AddMedicamentos from "./AddMedicamentos";
-import { useApi } from "../../api/useApi";
+import Loading from "../../../components/Loading/Loading";
+import TabelaListagem from "../../../components/TabelaListagem/TabelaListagem";
+import { showMessage } from "../../../helpers/message";
+import { useApi } from "../../../api/useApi";
+import AddUnidades from "./AddUnidades";
 
-export default function Medicamentos() {
+export default function Unidades() {
   const api = useApi();
-  const [dadosMedicamentos, setDadosMedicamentos] = useState([]);
-  const [_dadosMedicamentos, set_DadosMedicamentos] = useState([]);
+  const [dadosUnidades, setDadosUnidades] = useState([]);
+  const [_dadosUnidades, set_DadosUnidades] = useState([]);
   const [isFiltro, setIsFiltro] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [addMedicamentos, setAddMedicamentos] = useState(false);
-  const [editarMedicamento, setEditarMedicamento] = useState(false);
-  const [dadosMedicamentoEditar, setDadosMedicamentoEditar] = useState([]);
+  const [addUnidades, setAddUnidades] = useState(false);
+  const [editarUnidade, setEditarUnidade] = useState(false);
+  const [dadosUnidadeEditar, setDadosUnidadeEditar] = useState([]);
   const [atualizarTabela , setAtualizarTabela]  = useState(false);
 
   const headers = [
-    { value: "Medicamento", objectValue: "identificacao" },
-    { value: "Concentração", objectValue: "concentracaoUnidade" },
+    { value: "Unidade", objectValue: "identificacao" },
     { value: "Descrição", objectValue: "descricao" },
-    { value: "Tipo", objectValue: "tipoMedicamento" },
   ];
 
   const handleDelete = (item) => {
-    console.log(item);
     setLoading(true);
-    api.delete("/Medicamentos/delete", item.id).then((result) => {
-      console.log(result);
-      
-      if (result.status !== 200) throw new Error("Houve um erro ao tentar deletar o medicamento!");
+    api.delete("/Unidades/delete", item.id).then((result) => {
+      if (result.status !== 200) throw new Error("Houve um erro ao tentar deletar a unidade!");
         
-      showMessage( "Sucesso", "Medicamento deletado com sucesso!", "success", null);
+      showMessage( "Sucesso", "Unidade deletada com sucesso!", "success", null);
       setLoading(false);
       setAtualizarTabela(true)
     })
@@ -48,21 +43,20 @@ export default function Medicamentos() {
   }
   
   const handleEditar = (item) => {
-    setDadosMedicamentoEditar(item)
-    setEditarMedicamento(true)
+    setDadosUnidadeEditar(item)
+    setEditarUnidade(true)
   }
-
-  // Açõeas da tabela
+ 
   const actions = [
     { icon: "bi bi-x-circle-fill text-white", color: "danger", action: handleDelete},
     { icon: "bi bi-pencil-square text-white", color: "warning", action: handleEditar},
   ];
 
   // Filtros
-  const [medicamentoFiltro, setMedicamentoFiltro] = useState("");
+  const [unidadeFiltro, setUnidadeFiltro] = useState("");
 
-  const handleMedicamentoChange = (event) => {
-    setMedicamentoFiltro(event.target.value);
+  const handleUnidadeChange = (event) => {
+    setUnidadeFiltro(event.target.value);
   };
 
   useEffect(() => {
@@ -70,13 +64,13 @@ export default function Medicamentos() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        api.get("/Medicamentos/getAll").then((result) => {
+        api.get("/Unidades/getAll").then((result) => {
           result.data.map((m) => {
-            m.concentracaoUnidade = `${m.concentracao} ${m.unidade}`;
+            m.concentracao = `${m.concentracao} ${m.unidade}`;
           });
 
-          setDadosMedicamentos(result.data);
-          set_DadosMedicamentos(result.data);
+          setDadosUnidades(result.data);
+          set_DadosUnidades(result.data);
           setLoading(false);
         });
       } catch (error) {
@@ -86,26 +80,26 @@ export default function Medicamentos() {
     };
 
     fetchData();
-  }, [addMedicamentos, setAddMedicamentos, atualizarTabela]);
+  }, [addUnidades, setAddUnidades, atualizarTabela]);
 
   const handleFiltro = () => {
     // Resetar os dados para o estado original
-    setDadosMedicamentos(dadosMedicamentos);
+    setDadosUnidades(dadosUnidades);
 
     // Verificar se algum filtro foi preenchido
-    if (medicamentoFiltro === "") {
+    if (unidadeFiltro === "") {
       showMessage("Aviso", "Informe ao menos um dos campos!", "error", null);
       return;
     }
 
     // Criar uma cópia dos dados originais para aplicar os filtros
-    let dadosFiltrados = [...dadosMedicamentos];
+    let dadosFiltrados = [...dadosUnidades];
 
-    if (medicamentoFiltro.trim() !== "") {
+    if (unidadeFiltro.trim() !== "") {
       dadosFiltrados = dadosFiltrados.filter((item) =>
         item.identificacao
           .toLowerCase()
-          .includes(medicamentoFiltro.trim().toLowerCase())
+          .includes(unidadeFiltro.trim().toLowerCase())
       );
       dadosFiltrados.sort((a, b) => {
         return a.identificacao - b.identificacao;
@@ -113,22 +107,22 @@ export default function Medicamentos() {
     }
 
     setIsFiltro(true);
-    setDadosMedicamentos(dadosFiltrados);
+    setDadosUnidades(dadosFiltrados);
   };
 
   const handleLimparFiltro = () => {
-    setMedicamentoFiltro("");
-    setDadosMedicamentos(_dadosMedicamentos);
+    setUnidadeFiltro("");
+    setDadosUnidades(_dadosUnidades);
     setIsFiltro(false);
   };
 
-  const handleAddMedicamentos = () => {
-    setAddMedicamentos(true);
+  const handleAddUnidades = () => {
+    setAddUnidades(true);
   };
 
   const handleReturn = () => {
-    setAddMedicamentos(false)
-    setEditarMedicamento(false)
+    setAddUnidades(false)
+    setEditarUnidade(false)
     setAtualizarTabela(true)
   }
 
@@ -137,10 +131,10 @@ export default function Medicamentos() {
       {loading && <Loading />}
       <Row className="justify-content-md-center">
         <Col className="d-flex justify-content-center">
-          <h1 className="title-page">Medicamentos</h1>
+          <h1 className="title-page">Unidades</h1>
         </Col>
       </Row>
-      {!addMedicamentos && !editarMedicamento && (
+      {!addUnidades && !editarUnidade && (
         <>
           <Row>
             <Col md>
@@ -151,12 +145,12 @@ export default function Medicamentos() {
             <Row className="filtros">
               <Col md="3">
                 <Form.Group className="mb-3">
-                  <Form.Label>Medicamento</Form.Label>
+                  <Form.Label>Unidade</Form.Label>
                   <Form.Control
                     type="text"
                     placeholder=""
-                    value={medicamentoFiltro}
-                    onChange={(e) => {handleMedicamentoChange(e)}}
+                    value={unidadeFiltro}
+                    onChange={(e) => {handleUnidadeChange(e)}}
                   />
                 </Form.Group>
               </Col>
@@ -186,14 +180,14 @@ export default function Medicamentos() {
             <Row>
             </Row>
           </Form>
-          {!addMedicamentos && !editarMedicamento && (
+          {!addUnidades && !editarUnidade && (
             <Row>
               <Col>
                 <Button
                   className="m-3 mb-0 mt-2 text-white"
                   variant="info"
                   style={{ backgroundColor: "#3F8576", borderColor: "#3F8576" }}
-                  onClick={handleAddMedicamentos}
+                  onClick={handleAddUnidades}
                 >
                   <i class="bi bi-plus"></i> Cadastrar
                 </Button>{" "}
@@ -203,20 +197,20 @@ export default function Medicamentos() {
           <Form className="text-black mb-4 shadow p-3 mb-5 bg-white rounded">
             <Row className="justify-content-center">
               <Col>
-                <TabelaListagem headers={headers} itens={dadosMedicamentos} actions={actions} />
+                <TabelaListagem headers={headers} itens={dadosUnidades} actions={actions} />
               </Col>
             </Row>
           </Form>
         </>
       )}
-      {addMedicamentos && (
+      {addUnidades && (
         <Form className="text-black mb-4 shadow p-3 mb-5 bg-white rounded">
-          <AddMedicamentos handleReturn={handleReturn} />
+          <AddUnidades handleReturn={handleReturn} />
         </Form>
       )}
-      {editarMedicamento && (
+      {editarUnidade && (
         <Form className="text-black mb-4 shadow p-3 mb-5 bg-white rounded">
-          <AddMedicamentos handleReturn={handleReturn} dadosEdicao={dadosMedicamentoEditar} />
+          <AddUnidades handleReturn={handleReturn} dadosEdicao={dadosUnidadeEditar} />
         </Form>
       )}
     </Container>

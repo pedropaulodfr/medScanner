@@ -14,7 +14,6 @@
     align-items: center;
     justify-content: space-around;
 }
-
 .dropdown-item {
     cursor: pointer;
 }
@@ -22,3 +21,7 @@
 .dropdown-menu a:hover{
     color: #50BF84
 }
+
+/* . {
+    color: #eb5f5f
+} */
