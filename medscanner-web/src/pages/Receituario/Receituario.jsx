@@ -1,41 +1,43 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 // Bootstrap
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
+import TabelaListagem from "../../components/TabelaListagem/TabelaListagem";
 import Form from "react-bootstrap/Form";
 
 // Utils e helpers
-import TabelaListagem from "../../../components/TabelaListagem/TabelaListagem";
-import { showMessage } from "../../../helpers/message";
-import { useApi } from "../../../api/useApi";
-import Loading from "../../../components/Loading/Loading";
-import AddTipoMedicamento from "./AddTipoMedicamento";
+import Loading from "../../components/Loading/Loading";
+import { showMessage } from "../../helpers/message";
+import { useApi } from "../../api/useApi";
+import AddReceituarios from "./AddReceituario";
 
-export default function TipoMedicamento() {
+export default function Receituario() {
   const api = useApi();
-  const [dadosTipos, setDadosTipos] = useState([]);
-  const [_dadosTipos, set_DadosTipos] = useState([]);
+  const [dadosReceituario, setDadosReceituario] = useState([]);
+  const [_dadosReceituario, set_DadosReceituario] = useState([]);
   const [isFiltro, setIsFiltro] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [addTipos, setAddTipos] = useState(false);
-  const [editarTipo, setEditarTipo] = useState(false);
-  const [dadosUnidadeEditar, setDadosTipoEditar] = useState([]);
+  const [addReceituario, setAddReceituario] = useState(false);
+  const [editarReceituario, setEditarReceituario] = useState(false);
+  const [dadosReceituarioEditar, setDadosReceituarioEditar] = useState([]);
   const [atualizarTabela , setAtualizarTabela]  = useState(false);
 
   const headers = [
-    { value: "Tipo", objectValue: "identificacao" },
-    { value: "Descrição", objectValue: "descricao" },
+    { value: "Medicamento", objectValue: "medicamento" },
+    { value: "Dose", objectValue: "doseFormatada" },
+    { value: "Frequência", objectValue: "frequenciaFormatada" },
   ];
 
   const handleDelete = (item) => {
     setLoading(true);
-    api.delete("/TipoMedicamentos/delete", item.id).then((result) => {
-      if (result.status !== 200) throw new Error("Houve um erro ao tentar deletar o tipo de medicamento!");
+    api.delete("/Receituario/delete", item.id).then((result) => {
+      if (result.status !== 200) throw new Error("Houve um erro ao tentar excluir o receituário!");
         
-      showMessage( "Sucesso", "Tipo de medicamento deletado com sucesso!", "success", null);
+      showMessage( "Sucesso", "Receiturário excluído com sucesso!", "success", null);
       setLoading(false);
       setAtualizarTabela(true)
     })
@@ -43,20 +45,21 @@ export default function TipoMedicamento() {
   }
   
   const handleEditar = (item) => {
-    setDadosTipoEditar(item)
-    setEditarTipo(true)
+    setDadosReceituarioEditar(item)
+    setEditarReceituario(true)
   }
  
+  // Ações da tabela
   const actions = [
     { icon: "bi bi-x-circle-fill text-white", color: "danger", action: handleDelete},
     { icon: "bi bi-pencil-square text-white", color: "warning", action: handleEditar},
   ];
 
   // Filtros
-  const [unidadeFiltro, setUnidadeFiltro] = useState("");
+  const [medicamentoFiltro, setMedicamentoFiltro] = useState("");
 
-  const handleUnidadeChange = (event) => {
-    setUnidadeFiltro(event.target.value);
+  const handleMedicamentoChange = (event) => {
+    setMedicamentoFiltro(event.target.value);
   };
 
   useEffect(() => {
@@ -64,9 +67,14 @@ export default function TipoMedicamento() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        api.get("/TipoMedicamentos/getAll").then((result) => {
-          setDadosTipos(result.data);
-          set_DadosTipos(result.data);
+        await api.get("/Receituario/getAll").then((result) => {
+          result.data.map(m => {
+            m.doseFormatada = `${m.dose} ${m.tipoMedicamento}`;
+            m.frequenciaFormatada = `${m.frequencia} ${m.frequencia > 1 ? "vezes" : "vez"} por ${m.tempo.toLowerCase()} pela ${m.periodo.toLowerCase()}`;
+          })
+          
+          setDadosReceituario(result.data);
+          set_DadosReceituario(result.data);
           setLoading(false);
         });
       } catch (error) {
@@ -76,49 +84,51 @@ export default function TipoMedicamento() {
     };
 
     fetchData();
-  }, [addTipos, setAddTipos, atualizarTabela]);
+  }, [addReceituario, setAddReceituario, atualizarTabela]);
 
   const handleFiltro = () => {
     // Resetar os dados para o estado original
-    setDadosTipos(dadosTipos);
+    setDadosReceituario(dadosReceituario);
 
     // Verificar se algum filtro foi preenchido
-    if (unidadeFiltro === "") {
+    if (
+      medicamentoFiltro === ""
+    ) {
       showMessage("Aviso", "Informe ao menos um dos campos!", "error", null);
       return;
     }
 
     // Criar uma cópia dos dados originais para aplicar os filtros
-    let dadosFiltrados = [...dadosTipos];
+    let dadosFiltrados = [...dadosReceituario];
 
-    if (unidadeFiltro.trim() !== "") {
+    if (medicamentoFiltro.trim() !== "") {
       dadosFiltrados = dadosFiltrados.filter((item) =>
-        item.identificacao
+        item.medicamento
           .toLowerCase()
-          .includes(unidadeFiltro.trim().toLowerCase())
+          .includes(medicamentoFiltro.trim().toLowerCase())
       );
       dadosFiltrados.sort((a, b) => {
-        return a.identificacao - b.identificacao;
+        return a.medicamento - b.medicamento;
       });
     }
 
     setIsFiltro(true);
-    setDadosTipos(dadosFiltrados);
+    setDadosReceituario(dadosFiltrados);
+  };
+
+  const handleAddReceituarios = () => {
+    setAddReceituario(true);
   };
 
   const handleLimparFiltro = () => {
-    setUnidadeFiltro("");
-    setDadosTipos(_dadosTipos);
+    setMedicamentoFiltro("");
+    setDadosReceituario(_dadosReceituario);
     setIsFiltro(false);
   };
 
-  const handleAddUnidades = () => {
-    setAddTipos(true);
-  };
-
   const handleReturn = () => {
-    setAddTipos(false)
-    setEditarTipo(false)
+    setAddReceituario(false)
+    setEditarReceituario(false)
     setAtualizarTabela(true)
   }
 
@@ -126,27 +136,35 @@ export default function TipoMedicamento() {
     <Container>
       {loading && <Loading />}
       <Row className="justify-content-md-center">
-        <Col className="d-flex justify-content-center">
-          <h1 className="title-page">Tipo Medicamento</h1>
+        <Col className="d-flex justify-content-center" >
+          <h1 className="title-page">Receituário</h1>
         </Col>
       </Row>
-      {!addTipos && !editarTipo && (
+      {!addReceituario && !editarReceituario && (
         <>
           <Row>
             <Col md>
               <h4>Filtros</h4>
             </Col>
           </Row>
-          <Form className="text-black mb-4 shadow p-3 mb-5 bg-white rounded">
+          <Form
+            className="text-black mb-4 shadow p-3 mb-5 bg-white rounded"
+            style={{
+              borderRadius: "15px",
+              padding: "20px",
+            }}
+          >
             <Row className="filtros">
               <Col md="3">
                 <Form.Group className="mb-3">
-                  <Form.Label>Tipo</Form.Label>
+                  <Form.Label>Medicamento</Form.Label>
                   <Form.Control
                     type="text"
                     placeholder=""
-                    value={unidadeFiltro}
-                    onChange={(e) => {handleUnidadeChange(e)}}
+                    value={medicamentoFiltro}
+                    onChange={(e) => {
+                      handleMedicamentoChange(e);
+                    }}
                   />
                 </Form.Group>
               </Col>
@@ -156,7 +174,7 @@ export default function TipoMedicamento() {
                   variant="info"
                   style={{ backgroundColor: "#3F8576", borderColor: "#3F8576" }}
                   onClick={handleFiltro}
-                >
+                  >
                   <i class="bi bi-funnel"></i> Filtrar
                 </Button>{" "}
                 {isFiltro && (
@@ -164,7 +182,7 @@ export default function TipoMedicamento() {
                     <Button
                       className="m-3 mb-0 mt-2 text-white"
                       variant="info"
-                      style={{backgroundColor: "#50BF84", borderColor: "#50BF84",}}
+                      style={{ backgroundColor: "#50BF84", borderColor: "#50BF84" }}
                       onClick={handleLimparFiltro}
                     >
                       <i class="bi bi-eraser"></i> Limpar Filtros
@@ -173,40 +191,44 @@ export default function TipoMedicamento() {
                 )}
               </Col>
             </Row>
-            <Row>
-            </Row>
           </Form>
-          {!addTipos && !editarTipo && (
+          {!addReceituario && !editarReceituario && (
             <Row>
               <Col>
                 <Button
                   className="m-3 mb-0 mt-2 text-white"
                   variant="info"
                   style={{ backgroundColor: "#3F8576", borderColor: "#3F8576" }}
-                  onClick={handleAddUnidades}
+                  onClick={handleAddReceituarios}
                 >
                   <i class="bi bi-plus"></i> Cadastrar
                 </Button>{" "}
               </Col>
             </Row>
           )}
-          <Form className="text-black mb-4 shadow p-3 mb-5 bg-white rounded">
+          <Form
+            className="text-black mb-4 shadow p-3 mb-5 bg-white rounded"
+            style={{
+              borderRadius: "15px",
+              padding: "20px",
+            }}
+          >
             <Row className="justify-content-center">
               <Col>
-                <TabelaListagem headers={headers} itens={dadosTipos} actions={actions} />
+                <TabelaListagem headers={headers} itens={dadosReceituario} actions={actions} />
               </Col>
             </Row>
           </Form>
         </>
       )}
-      {addTipos && (
+      {addReceituario && (
         <Form className="text-black mb-4 shadow p-3 mb-5 bg-white rounded">
-          <AddTipoMedicamento handleReturn={handleReturn} />
+          <AddReceituarios handleReturn={handleReturn} />
         </Form>
       )}
-      {editarTipo && (
+      {editarReceituario && (
         <Form className="text-black mb-4 shadow p-3 mb-5 bg-white rounded">
-          <AddTipoMedicamento handleReturn={handleReturn} dadosEdicao={dadosUnidadeEditar} />
+          <AddReceituarios handleReturn={handleReturn} dadosEdicao={dadosReceituarioEditar} />
         </Form>
       )}
     </Container>

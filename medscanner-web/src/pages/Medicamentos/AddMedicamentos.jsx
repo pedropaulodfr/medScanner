@@ -86,6 +86,7 @@ const AddMedicamentos = ({ handleReturn, dadosEdicao = [] }) => {
   };
 
   const handleConcentracaoChange = (event) => {
+    setConcentracao(event.target.value)
     set_DadosMedicamentos({
       ..._dadosMedicamentos,
       concentracao: event.target.value,

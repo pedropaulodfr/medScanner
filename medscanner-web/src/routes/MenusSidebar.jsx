@@ -1,9 +1,10 @@
 import Home from "../pages/Home";
-import CartaoControle from "../pages/CartaoControle";
+import CartaoControle from "../pages/CartaoControle/CartaoControle";
 import Dashboard from "../pages/Dashboard";
 import Medicamentos from "../pages/Medicamentos/Medicamentos";
 import TipoMedicamento from "../pages/Parametros/TipoMedicamento/TipoMedicamento";
 import Unidades from "../pages/Parametros/Unidades/Unidades";
+import Receituario from "../pages/Receituario/Receituario";
 
 var menus = [
   {
@@ -28,7 +29,7 @@ var menus = [
     path: "/receituario",
     name: "Receituário",
     icon: "bi bi-card-list",
-    component: CartaoControle,
+    component: Receituario,
   },
   {
     path: "/medicamentos",
