@@ -1,4 +1,3 @@
-using authentication_jwt.Context;
 using authentication_jwt.Models;
 using authentication_jwt.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -19,23 +18,30 @@ namespace authentication_jwt.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<ActionResult<dynamic>> Authenticate([FromBody] User model)
+        public async Task<ActionResult<dynamic>> Authenticate([FromBody] Usuario model)
         {
-            // Recupera o usuário
-            var user = await _dbContext.Users.Where(x => x.Email == model.Email && x.Password == model.Password).FirstOrDefaultAsync();
-            // Verifica se o usuário existe
-            if (user == null)
-                return BadRequest(new { message = "Usuário ou senha inválidos" });
+            try
+            {
+                // Recupera o usuário
+                var user = await _dbContext.Usuarios.Where(x => x.Email == model.Email && x.Senha == model.Senha).FirstOrDefaultAsync();
+                // Verifica se o usuário existe
+                if (user == null)
+                    return NotFound(new { message = "Usuário ou senha inválidos" });
 
-            // Gera o Token
-            var token = TokenService.GenerateToken(user);
+                // Gera o Token
+                var token = TokenService.GenerateToken(user);
 
-            // Oculta a senha
-            user.Password = "";
-            user.Email = model.Email;
+                // Oculta a senha
+                user.Senha = "";
+                user.Email = model.Email;
 
-            // Retorna os dados encapsulados em um ActionResult
-            return Ok(new { user, token });
+                // Retorna os dados encapsulados em um ActionResult
+                return Ok(new { user, token });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         [HttpPost("validate")]

@@ -15,6 +15,12 @@ function Sidebar({ sidebarStatus }) {
 
   const [loading, setLoading] = useState(false);
 
+  // Estado que controla o Accordion
+  const [activeKey, setActiveKey] = useState("1")
+  const toggleAccordion = () => {
+    setActiveKey(activeKey == "1" ? "0" : "1"); 
+  }
+
   const handleLogin = async () => {
     window.location.href = "/private";
   };
@@ -80,14 +86,14 @@ function Sidebar({ sidebarStatus }) {
                   } else {
                     return (
                       <Accordion
-                        defaultActiveKey="0"
+                        activeKey={activeKey}
                         style={{ backgroundColor: "transparent" }}
                       >
                         <Accordion.Item
                           eventKey="0"
                           style={{ backgroundColor: "transparent" }}
                         >
-                          <Accordion.Header>
+                          <Accordion.Header onClick={() => toggleAccordion("0")}>
                             <i className={menu.icon}></i>
                             <span className="ms-3 fs-5 d-none d-sm-inline">
                               {menu.name}

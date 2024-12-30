@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import Logotipo from "../assets/logotipo.png";
-import axios from "axios";
 import moment from "moment";
 
 // Bootstrap
@@ -17,27 +15,46 @@ import { showMessage } from "../helpers/message";
 // Importar Componentes
 import { Calendario } from "../components/Graficos/Calendario/Calendario";
 import { Colunas } from "../components/Graficos/Colunas/Colunas";
-import { Card } from "react-bootstrap";
 import Cards from "../components/Cards/Cards";
-import { render } from "@testing-library/react";
 import Modals from "../components/Modals/Modals";
 import TabelaListagem from "../components/TabelaListagem/TabelaListagem";
+import { useApi } from "../api/useApi";
 
 export default function Dashboard() {
+  const api = useApi();
   const [loading, setLoading] = useState(false);
   const [dadosMedicamentos, setDadosMedicamentos] = useState([]);
+  const [dadosCartaoControle, setDadosCartaoControle] = useState([]);
+  const [dadosProximoAoRetorno, setDadosProximoAoRetorno] = useState([]);
+  const [dadosQntMedicamentos, setDadosQntMedicamentos] = useState([]);
   const [cliqueCard, setCliqueCard] = useState(false);
 
-  const db = axios.create({
-    baseURL: "http://localhost:8000",
-  });
+  // Headers do Card Próximos ao Retorno
+  const headersProximoAoRetorno = [
+    { value: "Medicamento", objectValue: "medicamento" },
+    { value: "Data Retorno", objectValue: "dataRetornoFormatada" },
+  ]
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        await db.get("/card").then((result) => {
-          setDadosMedicamentos(result.data);
+        api.get("/Dashboard/cartaoControle").then((result) => {
+          setDadosCartaoControle(result.data);
+          setLoading(false);
+        });
+        
+        api.get("/Dashboard/proximoRetorno").then((result) => {
+          result.data.map(m => {
+            m.dataRetornoFormatada = moment(m.dataRetorno).format("DD/MM/YYYY")
+          })
+          
+          setDadosProximoAoRetorno(result.data);
+          setLoading(false);
+        });
+        
+        api.get("/Dashboard/quantidadeMedicamentos").then((result) => {
+          setDadosQntMedicamentos(result.data);
           setLoading(false);
         });
       } catch (error) {
@@ -50,18 +67,10 @@ export default function Dashboard() {
   }, []);
 
   // Data de retorno dos medicamentos
-  const data = [
-    [
-      { type: "date", id: "Date" },
-      { type: "number", id: "Won/Loss" },
-    ],
-  ];
-
-  dadosMedicamentos.forEach((dr) => {
-    const date = new Date(
-      moment(dr.dataRetorno, "DD/MM/YYYY").format("YYYY/MM/DD")
-    );
-    data.push([date, 0]);
+  const data = []
+  dadosCartaoControle.forEach((dr) => {
+    const date = moment(dr.dataRetorno).format("YYYY, MM, DD")
+    data.push([new Date(date), dr.quantidade]);
   });
 
   // Quantidade de medicamentos
@@ -75,26 +84,14 @@ export default function Dashboard() {
     }
   });
 
+  console.log(dadosQntMedicamentos);
   const dataQuantidades = [["Medicamento", "Quantidade", { role: "style" }]];
 
-  Object.entries(medicamentosQuantidades).forEach(
-    ([medicamento, quantidade], index) => {
-      const style = index % 2 === 0 ? "#4374E0" : "#00C6FF"; // Alternando cores para visualização
-      dataQuantidades.push([medicamento, quantidade, style]);
-    }
-  );
+  dadosQntMedicamentos.forEach((x, index) => {
+    const style = index % 2 === 0 ? "#4374E0" : "#00C6FF";
+    dataQuantidades.push([x.medicamento, x.quantidade, style])
+  })
 
-  // Cabeçalho e dados para testar o modal
-  const headersTesteModal = [
-    { value: "Medicamento", objectValue: "medicamento" },
-    { value: "Data", objectValue: "data" },
-  ]
-
-  const dadosMedicamentosTesteModal = [
-    {"medicamento": "Memantina", "data": "03/04/2024"},
-    {"medicamento": "Sertralina", "data": "03/04/2024"},
-  ]
-  //-------------------------------------------------
 
   const [titleModal, setTitleModal] = useState("");
   const [textModal, setTextModal] = useState();
@@ -107,7 +104,7 @@ export default function Dashboard() {
     switch (card) {
       case 1:
         _titleModal = "Medicamentos próximos ao retorno"
-        _textModal = <TabelaListagem headers={headersTesteModal} itens={dadosMedicamentosTesteModal} />
+        _textModal = <TabelaListagem headers={headersProximoAoRetorno} itens={dadosProximoAoRetorno} />
         break;
       
         case 2:
@@ -133,10 +130,10 @@ export default function Dashboard() {
       <Form className="text-black mb-4 shadow p-3 mb-5 bg-white rounded d-flex justify-content-center" style={{borderRadius: "15px",padding: "20px",}} >
         <Row>
           <Col onClick={() => {ModalElements(1)}}>
-            <Cards titleHeader="Próximo ao retorno" titleCard="5" text="Clique para ver detalhes" textAlign="center" cursorType="pointer" click={setCliqueCard} />
+            <Cards titleHeader="Próximo ao retorno" titleCard={dadosProximoAoRetorno[0]?.quantidade} text="Clique para ver detalhes" textAlign="center" cursorType="pointer" click={setCliqueCard} />
           </Col>
           <Col onClick={() => {ModalElements(2)}}>
-            <Cards titleHeader="Quantidade de Medicamentos" titleCard="1000" textAlign="center" cursorType="pointer" click={setCliqueCard} />
+            <Cards titleHeader="Quantidade de Medicamentos" titleCard={dadosQntMedicamentos[0]?.quantidadeTotal} textAlign="center" cursorType="pointer" click={setCliqueCard} />
           </Col>
         </Row>
       </Form>
