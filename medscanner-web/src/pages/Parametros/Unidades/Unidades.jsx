@@ -10,7 +10,7 @@ import Form from "react-bootstrap/Form";
 // Utils e helpers
 import Loading from "../../../components/Loading/Loading";
 import TabelaListagem from "../../../components/TabelaListagem/TabelaListagem";
-import { showMessage } from "../../../helpers/message";
+import { showMessage, showQuestion } from "../../../helpers/message";
 import { useApi } from "../../../api/useApi";
 import AddUnidades from "./AddUnidades";
 
@@ -31,15 +31,21 @@ export default function Unidades() {
   ];
 
   const handleDelete = (item) => {
-    setLoading(true);
-    api.delete("/Unidades/delete", item.id).then((result) => {
-      if (result.status !== 200) throw new Error("Houve um erro ao tentar deletar a unidade!");
-        
-      showMessage( "Sucesso", "Unidade deletada com sucesso!", "success", null);
-      setLoading(false);
-      setAtualizarTabela(true)
-    })
-    .catch((err) => {showMessage( "Erro", err, "error", null); setLoading(false)})
+    showQuestion("Tem certeza?", "Tem certeza que deseja excluir o registro? Esta ação é irreversível", "info",
+      (confirmation) => {
+        if (confirmation) {
+          setLoading(true);
+          api.delete("/Unidades/delete", item.id).then((result) => {
+            if (result.status !== 200) throw new Error("Houve um erro ao tentar deletar a unidade!");
+              
+            showMessage( "Sucesso", "Unidade deletada com sucesso!", "success", null);
+            setLoading(false);
+            setAtualizarTabela(true)
+          })
+          .catch((err) => {showMessage( "Erro", err, "error", null); setLoading(false)})
+        }
+      }
+    );
   }
   
   const handleEditar = (item) => {

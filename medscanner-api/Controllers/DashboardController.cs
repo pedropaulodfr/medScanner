@@ -49,10 +49,10 @@ namespace authentication_jwt.Controllers
         }
         
         [HttpGet]
-        [Route("quantidadeMedicamentos")]
-        public async Task<ActionResult> CardQuantidadeMedicamentos()
+        [Route("estoqueMedicamentos")]
+        public async Task<ActionResult> EstoqueMedicamentos()
         {
-            var result = await _dashboardService.CardQuantidadeMedicamentos();  // Chama o método no serviço
+            var result = await _dashboardService.EstoqueMedicamentos();  // Chama o método no serviço
 
             try
             {

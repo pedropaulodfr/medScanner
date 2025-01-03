@@ -16,22 +16,41 @@ namespace authentication_jwt.Services
 
         public async Task<List<ReceituarioDTO>> GetAll()
         {
-            var receituarios = await _dbContext.Receituarios.ToListAsync();
+            var receituarios = await _dbContext.Receituarios
+                                                .Include(x => x.TipoMedicamento)
+                                                    .ThenInclude(y => y.Medicamentos)
+                                                        .ThenInclude(z => z.Unidade)
+                                                .AsNoTracking()
+                                                .ToListAsync();
 
-            List<ReceituarioDTO> retorno = receituarios.Select(m => new ReceituarioDTO
+            try
             {
-                Id = m.Id,
-                Frequencia = m.Frequencia,
-                Tempo = m.Tempo,
-                Periodo = m.Periodo,
-                Dose = m.Dose,
-                MedicamentoId = m.MedicamentoId,
-                Medicamento = (_dbContext.Medicamentos.Where(x => x.Id == m.MedicamentoId).FirstOrDefault()).Identificacao,
-                TipoMedicamento = (_dbContext.TipoMedicamentos.Where(x => x.Id == m.TipoMedicamentoId).FirstOrDefault()).Identificacao,
-                TipoMedicamentoId = m.TipoMedicamentoId
-            }).ToList();
+                List<ReceituarioDTO> retorno = receituarios.Select(m => new ReceituarioDTO
+                {
+                    Id = m.Id,
+                    Frequencia = m.Frequencia,
+                    Tempo = m.Tempo,
+                    Periodo = m.Periodo,
+                    Dose = m.Dose,
+                    Medicamento = new MedicamentoDTO 
+                    {
+                        Id = m.MedicamentoId,
+                        Identificacao = m.TipoMedicamento.Medicamentos.Where(x => x.Id == m.MedicamentoId).FirstOrDefault()?.Identificacao ?? "Sem Identificação",
+                        Descricao = m.TipoMedicamento.Medicamentos.Where(x => x.Id == m.MedicamentoId).FirstOrDefault()?.Descricao ?? "",
+                        Concentracao = m.TipoMedicamento.Medicamentos.Where(x => x.Id == m.MedicamentoId).FirstOrDefault()?.Concentracao.ToString() ?? "Sem Concentração",
+                        Unidade = m.TipoMedicamento.Medicamentos.Where(x => x.Id == m.MedicamentoId).FirstOrDefault()?.Unidade?.Identificacao ?? "Sem Unidade",
+                        TipoMedicamento = m.TipoMedicamento.Identificacao,
+                        TipoMedicamentoId = m.TipoMedicamentoId,
+                    }
+                }).ToList();
 
-            return retorno;
+                return retorno;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message ?? ex.InnerException.ToString());
+            }
+
         }
 
         public async Task<ReceituarioDTO> Insert(ReceituarioDTO model)
@@ -44,8 +63,8 @@ namespace authentication_jwt.Services
                     Tempo = model.Tempo,
                     Periodo = model.Periodo,
                     Dose = model.Dose,
-                    MedicamentoId = model.MedicamentoId,
-                    TipoMedicamentoId = model.TipoMedicamentoId
+                    MedicamentoId = model.Medicamento.Id,
+                    TipoMedicamentoId = model.Medicamento.TipoMedicamentoId.Value
                 };
 
                 await _dbContext.AddAsync(receituario);
@@ -71,8 +90,8 @@ namespace authentication_jwt.Services
                 existReceituario.Tempo = model.Tempo;
                 existReceituario.Periodo = model.Periodo;
                 existReceituario.Dose = model.Dose;
-                existReceituario.MedicamentoId = model.MedicamentoId;
-                existReceituario.TipoMedicamentoId = model.TipoMedicamentoId;
+                existReceituario.MedicamentoId = model.Medicamento.Id;
+                existReceituario.TipoMedicamentoId = model.Medicamento.TipoMedicamentoId.Value;
                 await _dbContext.SaveChangesAsync();
 
                 return model;

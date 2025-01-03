@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 
 namespace authentication_jwt.DTO.Dashboard
 {
-    public class QuantidadeMedicamentosDashboardDTO
+    public class EstoqueMedicamentosDashboardDTO
     {
         public string? Medicamento { get; set; }
         public long? Quantidade { get; set; }
-        public long? QuantidadeTotal { get; set; }
     }
 }

@@ -10,7 +10,7 @@ import Form from "react-bootstrap/Form";
 
 // Utils e helpers
 import Loading from "../../components/Loading/Loading";
-import { showMessage } from "../../helpers/message";
+import { showMessage, showQuestion } from "../../helpers/message";
 import AddMedicamentos from "./AddMedicamentos";
 import { useApi } from "../../api/useApi";
 
@@ -33,15 +33,21 @@ export default function Medicamentos() {
   ];
 
   const handleDelete = (item) => {
-    setLoading(true);
-    api.delete("/Medicamentos/delete", item.id).then((result) => {
-      if (result.status !== 200) throw new Error("Houve um erro ao tentar deletar o medicamento!");
-        
-      showMessage( "Sucesso", "Medicamento deletado com sucesso!", "success", null);
-      setLoading(false);
-      setAtualizarTabela(true)
-    })
-    .catch((err) => {showMessage( "Erro", err, "error", null); setLoading(false)})
+    showQuestion("Tem certeza?", "Tem certeza que deseja excluir o registro? Esta ação é irreversível", "info",
+      (confirmation) => {
+        if (confirmation) {
+          setLoading(true);
+          api.delete("/Medicamentos/delete", item.id).then((result) => {
+            if (result.status !== 200) throw new Error("Houve um erro ao tentar deletar o medicamento!");
+              
+            showMessage( "Sucesso", "Medicamento deletado com sucesso!", "success", null);
+            setLoading(false);
+            setAtualizarTabela(true)
+          })
+          .catch((err) => {showMessage( "Erro", err, "error", null); setLoading(false)})
+        }
+      }
+    );
   }
   
   const handleEditar = (item) => {

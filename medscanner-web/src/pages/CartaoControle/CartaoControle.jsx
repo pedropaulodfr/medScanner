@@ -11,7 +11,7 @@ import Form from "react-bootstrap/Form";
 
 // Utils e helpers
 import Loading from "../../components/Loading/Loading";
-import { showMessage } from "../../helpers/message";
+import { showMessage, showQuestion } from "../../helpers/message";
 import { useApi } from "../../api/useApi";
 import AddCartaoControle from "./AddCartaoControle.jsx";
 
@@ -35,15 +35,21 @@ export default function CartaoControle() {
   ];
 
   const handleDelete = (item) => {
-    setLoading(true);
-    api.delete("/CartaoControle/delete", item.id).then((result) => {
-      if (result.status !== 200) throw new Error("Houve um erro ao tentar excluir o registro!");
-        
-      showMessage( "Sucesso", "Registro excluído com sucesso!", "success", null);
-      setLoading(false);
-      setAtualizarTabela(true)
-    })
-    .catch((err) => {showMessage( "Erro", err, "error", null); setLoading(false)})
+    showQuestion("Tem certeza?", "Tem certeza que deseja excluir o registro?\n Esta ação é irreversível", "info",
+      (confirmation) => {
+        if (confirmation) {
+          setLoading(true);
+          api.delete("/CartaoControle/delete", item.id).then((result) => {
+            if (result.status !== 200) throw new Error("Houve um erro ao tentar excluir o registro!");
+              
+            showMessage( "Sucesso", "Registro excluído com sucesso!", "success", null);
+            setLoading(false);
+            setAtualizarTabela(true)
+          })
+          .catch((err) => {showMessage( "Erro", err, "error", null); setLoading(false)})
+        }
+      }
+    );
   }
   
   const handleEditar = (item) => {

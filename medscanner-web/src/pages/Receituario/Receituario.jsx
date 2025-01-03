@@ -11,7 +11,7 @@ import Form from "react-bootstrap/Form";
 
 // Utils e helpers
 import Loading from "../../components/Loading/Loading";
-import { showMessage } from "../../helpers/message";
+import { showMessage, showQuestion } from "../../helpers/message";
 import { useApi } from "../../api/useApi";
 import AddReceituarios from "./AddReceituario";
 
@@ -27,24 +27,30 @@ export default function Receituario() {
   const [atualizarTabela , setAtualizarTabela]  = useState(false);
 
   const headers = [
-    { value: "Medicamento", objectValue: "medicamento" },
+    { value: "Medicamento", objectValue: "medicamentoFormatado" },
     { value: "Dose", objectValue: "doseFormatada" },
     { value: "Frequência", objectValue: "frequenciaFormatada" },
   ];
 
   const handleDelete = (item) => {
-    setLoading(true);
-    api.delete("/Receituario/delete", item.id).then((result) => {
-      if (result.status !== 200) throw new Error("Houve um erro ao tentar excluir o receituário!");
-        
-      showMessage( "Sucesso", "Receiturário excluído com sucesso!", "success", null);
-      setLoading(false);
-      setAtualizarTabela(true)
-    })
-    .catch((err) => {showMessage( "Erro", err, "error", null); setLoading(false)})
+    showQuestion("Tem certeza?", "Tem certeza que deseja excluir o registro? Esta ação é irreversível", "info",
+      (confirmation) => {
+        if (confirmation) {
+          setLoading(true);
+          api.delete("/Receituario/delete", item.id).then((result) => {
+            if (result.status !== 200) throw new Error("Houve um erro ao tentar excluir o receituário!");
+              
+            showMessage( "Sucesso", "Receiturário excluído com sucesso!", "success", null);
+            setLoading(false);
+            setAtualizarTabela(true)
+          })
+          .catch((err) => {showMessage( "Erro", err, "error", null); setLoading(false)})
+        }
+      }
+    );
   }
   
-  const handleEditar = (item) => {
+  const handleEditar = (item) => {    
     setDadosReceituarioEditar(item)
     setEditarReceituario(true)
   }
@@ -69,7 +75,8 @@ export default function Receituario() {
         setLoading(true);
         await api.get("/Receituario/getAll").then((result) => {
           result.data.map(m => {
-            m.doseFormatada = `${m.dose} ${m.tipoMedicamento}`;
+            m.medicamentoFormatado = `${m.medicamento.identificacao} ${m.medicamento.concentracao} ${m.medicamento.unidade}`;
+            m.doseFormatada = `${m.dose} ${m.medicamento.tipoMedicamento}`;
             m.frequenciaFormatada = `${m.frequencia} ${m.frequencia > 1 ? "vezes" : "vez"} por ${m.tempo.toLowerCase()} pela ${m.periodo.toLowerCase()}`;
           })
           

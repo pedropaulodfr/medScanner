@@ -46,7 +46,7 @@ namespace authentication_jwt.Services
             return proximosAoRetorno;
         }
 
-        public async Task<List<QuantidadeMedicamentosDashboardDTO>> CardQuantidadeMedicamentos()
+        public async Task<List<EstoqueMedicamentosDashboardDTO>> EstoqueMedicamentos()
         {
             var dados = await _dbContext.CartaoControles
                                         .Include(x => x.Medicamento)
@@ -56,10 +56,9 @@ namespace authentication_jwt.Services
             /* CC = Cartão de Controle | R = Receituário
             Fórmula para calcular a quantidade:
             Quantidade = CC.quantidade - ((dataHoje - CC.data) x R.dose x R.frequencia) */
-            var retorno = dados.GroupBy(x => x.MedicamentoId ).Select(y => new QuantidadeMedicamentosDashboardDTO
+            var retorno = dados.GroupBy(x => x.MedicamentoId ).Select(y => new EstoqueMedicamentosDashboardDTO
             {
                 Medicamento = string.Format("{0} {1} {2}", y.First().Medicamento.Identificacao, y.First().Medicamento.Concentracao,  y.First().Medicamento.Unidade.Identificacao),
-                QuantidadeTotal = dados.Count(),
                 Quantidade = (
                     _dbContext.CartaoControles
                         .Where(x => x.MedicamentoId == y.Key)

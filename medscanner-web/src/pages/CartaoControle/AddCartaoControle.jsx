@@ -229,7 +229,7 @@ const AddCartaoControle = ({ handleReturn, dadosEdicao = [] }) => {
               <option value={0}>Selecione</option>
               {listaMedicamentos?.map((m, index) => (
                 <option key={index} value={m.id}>
-                  {m.identificacao}
+                  {m.identificacao} {m.concentracao} {m.unidade}
                 </option>
               ))}
             </Form.Select>

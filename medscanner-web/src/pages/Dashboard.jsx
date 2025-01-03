@@ -26,7 +26,7 @@ export default function Dashboard() {
   const [dadosMedicamentos, setDadosMedicamentos] = useState([]);
   const [dadosCartaoControle, setDadosCartaoControle] = useState([]);
   const [dadosProximoAoRetorno, setDadosProximoAoRetorno] = useState([]);
-  const [dadosQntMedicamentos, setDadosQntMedicamentos] = useState([]);
+  const [dadosEstoqueMedicamentos, setdadosEstoqueMedicamentos] = useState([]);
   const [cliqueCard, setCliqueCard] = useState(false);
 
   // Headers do Card Próximos ao Retorno
@@ -53,8 +53,13 @@ export default function Dashboard() {
           setLoading(false);
         });
         
-        api.get("/Dashboard/quantidadeMedicamentos").then((result) => {
-          setDadosQntMedicamentos(result.data);
+        api.get("/Dashboard/estoqueMedicamentos").then((result) => {
+          setdadosEstoqueMedicamentos(result.data);
+          setLoading(false);
+        });
+        
+        api.get("/Medicamentos/getAll").then((result) => {
+          setDadosMedicamentos(result.data);
           setLoading(false);
         });
       } catch (error) {
@@ -73,25 +78,11 @@ export default function Dashboard() {
     data.push([new Date(date), dr.quantidade]);
   });
 
-  // Quantidade de medicamentos
-  const medicamentosQuantidades = {};
-  dadosMedicamentos.forEach((m) => {
-    const { medicamento, quantidade } = m;
-    if (medicamentosQuantidades[medicamento]) {
-      medicamentosQuantidades[medicamento] += quantidade;
-    } else {
-      medicamentosQuantidades[medicamento] = quantidade;
-    }
-  });
-
-  console.log(dadosQntMedicamentos);
   const dataQuantidades = [["Medicamento", "Quantidade", { role: "style" }]];
-
-  dadosQntMedicamentos.forEach((x, index) => {
+  dadosEstoqueMedicamentos.forEach((x, index) => {
     const style = index % 2 === 0 ? "#4374E0" : "#00C6FF";
     dataQuantidades.push([x.medicamento, x.quantidade, style])
   })
-
 
   const [titleModal, setTitleModal] = useState("");
   const [textModal, setTextModal] = useState();
@@ -109,7 +100,7 @@ export default function Dashboard() {
       
         case 2:
         _titleModal = "Quantidade de medicamentos"
-        _textModal = "1000"
+        _textModal = `Total de medicamentos cadastrados: ${dadosMedicamentos?.length}`
         
       default:
         break;
@@ -130,10 +121,20 @@ export default function Dashboard() {
       <Form className="text-black mb-4 shadow p-3 mb-5 bg-white rounded d-flex justify-content-center" style={{borderRadius: "15px",padding: "20px",}} >
         <Row>
           <Col onClick={() => {ModalElements(1)}}>
-            <Cards titleHeader="Próximo ao retorno" titleCard={dadosProximoAoRetorno[0]?.quantidade} text="Clique para ver detalhes" textAlign="center" cursorType="pointer" click={setCliqueCard} />
+            <Cards titleHeader="Próximo ao retorno" text="Clique para ver detalhes" textAlign="center" cursorType="pointer" click={setCliqueCard} >
+            <div className="flex flex-col justify-center items-center text-center">
+              <h1>{dadosProximoAoRetorno[0]?.quantidade}</h1>
+              <span>Clique para ver detalhes</span>
+            </div>
+            </Cards>
           </Col>
           <Col onClick={() => {ModalElements(2)}}>
-            <Cards titleHeader="Quantidade de Medicamentos" titleCard={dadosQntMedicamentos[0]?.quantidadeTotal} textAlign="center" cursorType="pointer" click={setCliqueCard} />
+            <Cards titleHeader="Quantidade de Medicamentos" textAlign="center" cursorType="pointer" click={setCliqueCard}>
+                <div className="flex flex-col justify-center items-center text-center">
+                  <h1>{dadosMedicamentos?.length}</h1>
+                  <span>Clique para ver detalhes</span>
+              </div>
+            </Cards>
           </Col>
         </Row>
       </Form>

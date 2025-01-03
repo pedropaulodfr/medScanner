@@ -38,7 +38,6 @@ const AddReceituarios = ({ handleReturn, dadosEdicao = [] }) => {
     { nome: "tempo", type: "text" },
     { nome: "periodo", type: "text" },
     { nome: "dose", type: "text" },
-    { nome: "tipoMedicamentoId", type: "number" },
   ];
 
   // Períodos
@@ -68,31 +67,40 @@ const AddReceituarios = ({ handleReturn, dadosEdicao = [] }) => {
 
   useEffect(() => {
     if (Object.keys(dadosEdicao).length > 0) {
-      setMedicamentoId(dadosEdicao.medicamentoId)
+      setMedicamentoId(dadosEdicao.medicamento.id)
       setFrequencia(dadosEdicao.frequencia)
       setTempo(dadosEdicao.tempo)
       setPeriodo(dadosEdicao.periodo)
       setDose(dadosEdicao.dose)
-      setTipoId(dadosEdicao.tipoMedicamentoId)
+      setTipoId(dadosEdicao.medicamento.tipoMedicamentoId)
 
       setDadosReceituario({
         ...dadosReceituario,
         id: dadosEdicao.id,
-        medicamentoId: dadosEdicao.medicamentoId,
         frequencia: dadosEdicao.frequencia,
         tempo: dadosEdicao.tempo,
         periodo: dadosEdicao.periodo,
         dose: dadosEdicao.dose,
-        tipoMedicamentoId: dadosEdicao.tipoMedicamentoId,
+        medicamento: {
+          id: dadosEdicao.medicamento.id,
+          tipoMedicamentoId: dadosEdicao.medicamento.tipoMedicamentoId,
+        }
       });
     }
   }, []);
 
   const handleMedicamentoChange = (event) => {
     setMedicamentoId(event.target.value);
+    const tipoMedicamentoSelecionado_Id = listaMedicamentos.filter(f => f.id == event.target.value)[0].tipoMedicamentoId
+    setTipoId(tipoMedicamentoSelecionado_Id);
+    
     setDadosReceituario({
       ...dadosReceituario,
-      medicamentoId: event.target.value,
+      medicamento: {
+        ...dadosReceituario.medicamento,
+        id: event.target.value,
+        tipoMedicamentoId: tipoMedicamentoSelecionado_Id
+      },
     });
   };
 
@@ -128,13 +136,16 @@ const AddReceituarios = ({ handleReturn, dadosEdicao = [] }) => {
     });
   };
   
-  const handleTipoChange = (event) => {
-    setTipoId(event.target.value);
+  /* const handleTipoChange = (id) => {
+    setTipoId(id);
     setDadosReceituario({
       ...dadosReceituario,
-      tipoMedicamentoId: event.target.value,
+      medicamento: {
+        ...dadosReceituario.medicamento,
+        tipoMedicamentoId: id
+      },
     });
-  };
+  }; */
  
   const handleLimparCampos = () => {
     setMedicamentoId(0)
@@ -147,7 +158,16 @@ const AddReceituarios = ({ handleReturn, dadosEdicao = [] }) => {
   };
 
   const onSubmit = () => {
-    const newErrors = ValidaCampos(campos, dadosReceituario);
+    const _dadosValidacao = {
+      ...dadosReceituario, 
+      medicamentoId: dadosReceituario.medicamento.id,
+      tipoMedicamentoId: dadosReceituario.medicamento.tipoMedicamentoId
+    }
+
+    console.log("_dadosValidacao", _dadosValidacao);
+    
+    
+    const newErrors = ValidaCampos(campos, _dadosValidacao);
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors); // Atualiza o estado de erros
       return; // Interrompe a execução
@@ -233,7 +253,7 @@ const AddReceituarios = ({ handleReturn, dadosEdicao = [] }) => {
               <option value={0}>Selecione</option>
               {listaMedicamentos?.map((m, index) => (
                 <option key={index} value={m.id}>
-                  {m.identificacao}
+                  {m.identificacao} {m.concentracao} {m.unidade}
                 </option>
               ))}
             </Form.Select>
@@ -307,8 +327,8 @@ const AddReceituarios = ({ handleReturn, dadosEdicao = [] }) => {
             <Form.Select
               aria-label="Default select example"
               value={tipoId}
-              onChange={(e) => handleTipoChange(e)}
               isInvalid={!!errors.tipoMedicamentoId}
+              disabled={true}
               >
               <option value={0}>Selecione</option>
               {listaTipos?.map((m, index) => (

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Card from "react-bootstrap/Card";
 
-function Cards({ titleHeader = "", titleCard = "", text = " ", textAlign = "start", cursorType= "text", color = "light", click }) {
+function Cards({ children, titleHeader = "", titleCard = "", text = " ", textAlign = "start", cursorType= "text", color = "light", click }) {
   const [openCard, setOpenCard] = useState(true)
   return (
     <>
@@ -15,7 +15,7 @@ function Cards({ titleHeader = "", titleCard = "", text = " ", textAlign = "sta
               {titleCard}
             </Card.Title>
             <Card.Text className={`d-flex justify-content-${textAlign}`} style={{cursor: `${cursorType}`}} onClick={() => {click(true)}}>
-              {text}
+              {children}
             </Card.Text>
           </Card.Body>
         }

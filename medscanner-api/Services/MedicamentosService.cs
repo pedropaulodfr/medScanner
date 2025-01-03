@@ -44,7 +44,7 @@ namespace authentication_jwt.Services
                 {
                     Identificacao = model.Identificacao,
                     Descricao = model.Descricao ?? "",
-                    TipoMedicamentoId = model.TipoMedicamentoId,
+                    TipoMedicamentoId = model.TipoMedicamentoId.Value,
                     Concentracao = Int32.Parse(model.Concentracao),
                     UnidadeId = model.UnidadeId
                 };
@@ -71,7 +71,7 @@ namespace authentication_jwt.Services
                 existMedicamento.Identificacao = model.Identificacao;
                 existMedicamento.Descricao = model.Descricao;
                 existMedicamento.Concentracao = Int32.Parse(model.Concentracao);
-                existMedicamento.TipoMedicamentoId = model.TipoMedicamentoId;
+                existMedicamento.TipoMedicamentoId = model.TipoMedicamentoId.Value;
                 existMedicamento.UnidadeId = model.UnidadeId;
 
                 await _dbContext.SaveChangesAsync();
