@@ -33,22 +33,25 @@ export const useApi = () => ({
     },
     get: async (path) => {
         try {
-            const response = await api.get(path)
-            .then((result) => {
-                return result
-            })
-            .catch((error) => {
-                return error
-            })
-
+            const token =  localStorage.getItem("authToken");
+            const response = await api.get(path, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             return response;
         } catch (error) {
-            return error
+            return error;
         }
     },
     post: async (path, data) => {
         try {
-            const response = await api.post(path, data)
+            const token =  localStorage.getItem("authToken");
+            const response = await api.post(path, data, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
             .then((result) => {
                 return result
             })
@@ -63,7 +66,12 @@ export const useApi = () => ({
     },
     delete: async (path, id) => {
         try {
-            const response = await api.delete(`${path}/${id}`)
+            const token =  localStorage.getItem("authToken");
+            const response = await api.delete(`${path}/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
             .then((result) => {
                 return result
             })
@@ -78,7 +86,12 @@ export const useApi = () => ({
     },
     put: async (path, data) => {
         try {
-            const response = await api.put(path, data)
+            const token =  localStorage.getItem("authToken");
+            const response = await api.put(path, data, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
             .then((result) => {
                 return result
             })

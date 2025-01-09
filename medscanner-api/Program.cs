@@ -32,6 +32,7 @@ builder.Services.AddControllers();
 
 var key = Encoding.ASCII.GetBytes(authentication_jwt.Settings.Secret);
 
+builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

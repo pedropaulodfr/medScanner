@@ -231,7 +231,7 @@ useEffect(() => {
         
         <Col md="4">
           <Form.Group className="mb-3">
-            <Form.Label><span className="text-danger">*</span> Código de Cadastro</Form.Label>
+            <Form.Label>Código de Cadastro</Form.Label>
             <Form.Control
               type="text"
               placeholder="0000"
@@ -250,7 +250,7 @@ useEffect(() => {
               aria-label="Default select example"
               value={status}
               onChange={(e) => handleStatusChange(e)}
-              isInvalid={!!errors.status}
+              isInvalid={!!errors.ativo}
               >
               <option value={0}>Selecione</option>
               {listaStatus?.map((m, index) => (

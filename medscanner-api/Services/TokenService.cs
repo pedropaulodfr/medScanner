@@ -21,7 +21,9 @@ namespace authentication_jwt.Services
                     new Claim(ClaimTypes.Role, user.Perfil.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddHours(2),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+                Audience = "Audience",
+                Issuer = "MedicScanIssuer"
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
@@ -48,7 +50,8 @@ namespace authentication_jwt.Services
 
                 User user = new User{
                     Username = tokenUsername,
-                    Role = tokenRole
+                    Role = tokenRole,
+                    Token = token
                 };
 
                 return user;
