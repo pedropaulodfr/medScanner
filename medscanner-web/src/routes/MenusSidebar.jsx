@@ -5,6 +5,7 @@ import Medicamentos from "../pages/Medicamentos/Medicamentos";
 import TipoMedicamento from "../pages/Parametros/TipoMedicamento/TipoMedicamento";
 import Unidades from "../pages/Parametros/Unidades/Unidades";
 import Receituario from "../pages/Receituario/Receituario";
+import Usuarios from "../pages/Usuarios/Usuarios";
 
 var menus = [
   {
@@ -38,7 +39,7 @@ var menus = [
     component: Medicamentos,
   },
   {
-    path: "/relatorios",
+    path: "/home",
     name: "Relatórios",
     icon: "bi bi-file-earmark",
     component: CartaoControle,
@@ -60,6 +61,12 @@ var menus = [
         component: TipoMedicamento,
       },
     ]
+  },
+  {
+    path: "/usuarios",
+    name: "Usuários",
+    icon: "bi bi-people",
+    component: Usuarios,
   },
 ];
 

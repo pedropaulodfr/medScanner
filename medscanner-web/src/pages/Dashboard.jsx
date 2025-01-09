@@ -34,6 +34,11 @@ export default function Dashboard() {
     { value: "Medicamento", objectValue: "medicamento" },
     { value: "Data Retorno", objectValue: "dataRetornoFormatada" },
   ]
+  
+  // Headers Medicamentos Cadastrados
+  const headersMedicamentos = [
+    { value: "Medicamentos", objectValue: "identificacao" },
+  ]
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,7 +78,7 @@ export default function Dashboard() {
 
   // Data de retorno dos medicamentos
   const data = []
-  dadosCartaoControle.forEach((dr) => {
+  dadosProximoAoRetorno.forEach((dr) => {
     const date = moment(dr.dataRetorno).format("YYYY, MM, DD")
     data.push([new Date(date), dr.quantidade]);
   });
@@ -99,8 +104,8 @@ export default function Dashboard() {
         break;
       
         case 2:
-        _titleModal = "Quantidade de medicamentos"
-        _textModal = `Total de medicamentos cadastrados: ${dadosMedicamentos?.length}`
+        _titleModal = "Medicamentos"
+        _textModal = <TabelaListagem headers={headersMedicamentos} itens={dadosMedicamentos} />
         
       default:
         break;
@@ -108,6 +113,9 @@ export default function Dashboard() {
       setTitleModal(_titleModal);
       setTextModal(_textModal);
   }
+
+  console.log("dadosMedicamentos", dadosMedicamentos);
+  
 
   return (
     <Container>
@@ -123,7 +131,7 @@ export default function Dashboard() {
           <Col onClick={() => {ModalElements(1)}}>
             <Cards titleHeader="Próximo ao retorno" text="Clique para ver detalhes" textAlign="center" cursorType="pointer" click={setCliqueCard} >
             <div className="flex flex-col justify-center items-center text-center">
-              <h1>{dadosProximoAoRetorno[0]?.quantidade}</h1>
+              <h1>{dadosProximoAoRetorno[0]?.quantidade ?? 0}</h1>
               <span>Clique para ver detalhes</span>
             </div>
             </Cards>
@@ -131,7 +139,7 @@ export default function Dashboard() {
           <Col onClick={() => {ModalElements(2)}}>
             <Cards titleHeader="Quantidade de Medicamentos" textAlign="center" cursorType="pointer" click={setCliqueCard}>
                 <div className="flex flex-col justify-center items-center text-center">
-                  <h1>{dadosMedicamentos?.length}</h1>
+                  <h1>{dadosMedicamentos?.length ?? 0}</h1>
                   <span>Clique para ver detalhes</span>
               </div>
             </Cards>
@@ -148,16 +156,18 @@ export default function Dashboard() {
           </Col>
         </Row>
       </Form>
-      <Form className="text-black mb-4 shadow p-3 mb-5 bg-white rounded" style={{borderRadius: "15px",padding: "20px",}} >
-        <Row>
-          <h3>Estoque Medicamentos</h3>
-        </Row>
-        <Row>
-          <Col>
-            <Colunas data={dataQuantidades} />
-          </Col>
-        </Row>
-      </Form>
+      {Object.keys(dadosEstoqueMedicamentos).length > 0 &&
+        <Form className="text-black mb-4 shadow p-3 mb-5 bg-white rounded" style={{borderRadius: "15px",padding: "20px",}} >
+          <Row>
+            <h3>Estoque Medicamentos</h3>
+          </Row>
+          <Row>
+            <Col>
+              <Colunas data={dataQuantidades} />    
+            </Col>
+          </Row>
+        </Form>
+      }
     </Container>
   );
 }

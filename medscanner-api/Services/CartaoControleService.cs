@@ -39,7 +39,8 @@ namespace authentication_jwt.Services
                 Data = m.Data,
                 DataRetorno = m.DataRetorno,
                 Profissional = m.Profissional
-            }).ToList();
+            })
+            .OrderBy(x => x.Data).ToList();
 
             return retorno;
         }

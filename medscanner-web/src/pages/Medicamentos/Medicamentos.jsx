@@ -78,8 +78,9 @@ export default function Medicamentos() {
             m.concentracaoUnidade = `${m.concentracao} ${m.unidade}`;
           });
 
-          setDadosMedicamentos(result.data);
-          set_DadosMedicamentos(result.data);
+          const dadosOrdenados = result.data.sort((a, b) => a.identificacao.localeCompare(b.identificacao));
+          setDadosMedicamentos(dadosOrdenados);
+          set_DadosMedicamentos(dadosOrdenados);
           setLoading(false);
         });
       } catch (error) {
@@ -110,9 +111,6 @@ export default function Medicamentos() {
           .toLowerCase()
           .includes(medicamentoFiltro.trim().toLowerCase())
       );
-      dadosFiltrados.sort((a, b) => {
-        return a.identificacao - b.identificacao;
-      });
     }
 
     setIsFiltro(true);
@@ -170,7 +168,7 @@ export default function Medicamentos() {
                   style={{ backgroundColor: "#3F8576", borderColor: "#3F8576" }}
                   onClick={handleFiltro}
                 >
-                  <i class="bi bi-funnel"></i> Filtrar
+                  <i className="bi bi-funnel"></i> Filtrar
                 </Button>{" "}
                 {isFiltro && (
                   <>
@@ -180,7 +178,7 @@ export default function Medicamentos() {
                       style={{backgroundColor: "#50BF84", borderColor: "#50BF84",}}
                       onClick={handleLimparFiltro}
                     >
-                      <i class="bi bi-eraser"></i> Limpar Filtros
+                      <i className="bi bi-eraser"></i> Limpar Filtros
                     </Button>{" "}
                   </>
                 )}
@@ -198,7 +196,7 @@ export default function Medicamentos() {
                   style={{ backgroundColor: "#3F8576", borderColor: "#3F8576" }}
                   onClick={handleAddMedicamentos}
                 >
-                  <i class="bi bi-plus"></i> Cadastrar
+                  <i className="bi bi-plus"></i> Cadastrar
                 </Button>{" "}
               </Col>
             </Row>

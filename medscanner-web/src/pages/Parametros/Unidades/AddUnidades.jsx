@@ -126,7 +126,7 @@ const AddUnidades = ({ handleReturn, dadosEdicao = [] }) => {
             variant="secondary"
             onClick={handleReturn}
           >
-            <i class="bi bi-arrow-left"></i> Voltar
+            <i className="bi bi-arrow-left"></i> Voltar
           </Button>{" "}
         </Col>
       </Row>
@@ -174,7 +174,7 @@ const AddUnidades = ({ handleReturn, dadosEdicao = [] }) => {
             style={{ backgroundColor: "#3F8576", borderColor: "#3F8576" }}
             onClick={onSubmit}
           >
-            <i class="bi bi-plus"></i> Salvar
+            <i className="bi bi-plus"></i> Salvar
           </Button>{" "}
           {Object.keys(dadosUnidades).length > 0 && (
             <>
@@ -184,7 +184,7 @@ const AddUnidades = ({ handleReturn, dadosEdicao = [] }) => {
                 style={{ backgroundColor: "#50BF84", borderColor: "#50BF84" }}
                 onClick={handleLimparCampos}
               >
-                <i class="bi bi-eraser"></i> Limpar Campos
+                <i className="bi bi-eraser"></i> Limpar Campos
               </Button>{" "}
             </>
           )}

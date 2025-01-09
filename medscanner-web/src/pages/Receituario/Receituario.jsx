@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 
 // Bootstrap
 import Container from "react-bootstrap/Container";
@@ -182,7 +181,7 @@ export default function Receituario() {
                   style={{ backgroundColor: "#3F8576", borderColor: "#3F8576" }}
                   onClick={handleFiltro}
                   >
-                  <i class="bi bi-funnel"></i> Filtrar
+                  <i className="bi bi-funnel"></i> Filtrar
                 </Button>{" "}
                 {isFiltro && (
                   <>
@@ -192,7 +191,7 @@ export default function Receituario() {
                       style={{ backgroundColor: "#50BF84", borderColor: "#50BF84" }}
                       onClick={handleLimparFiltro}
                     >
-                      <i class="bi bi-eraser"></i> Limpar Filtros
+                      <i className="bi bi-eraser"></i> Limpar Filtros
                     </Button>{" "}
                   </>
                 )}
@@ -208,7 +207,7 @@ export default function Receituario() {
                   style={{ backgroundColor: "#3F8576", borderColor: "#3F8576" }}
                   onClick={handleAddReceituarios}
                 >
-                  <i class="bi bi-plus"></i> Cadastrar
+                  <i className="bi bi-plus"></i> Cadastrar
                 </Button>{" "}
               </Col>
             </Row>

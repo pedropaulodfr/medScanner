@@ -5,40 +5,43 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
+import TabelaListagem from "../../components/TabelaListagem/TabelaListagem";
 import Form from "react-bootstrap/Form";
 
 // Utils e helpers
-import Loading from "../../../components/Loading/Loading";
-import TabelaListagem from "../../../components/TabelaListagem/TabelaListagem";
-import { showMessage, showQuestion } from "../../../helpers/message";
-import { useApi } from "../../../api/useApi";
-import AddUnidades from "./AddUnidades";
+import Loading from "../../components/Loading/Loading";
+import { showMessage, showQuestion } from "../../helpers/message";
+import { useApi } from "../../api/useApi";
+import AddUsuarios from "./AddUsuarios";
 
-export default function Unidades() {
+export default function Usuarios() {
   const api = useApi();
-  const [dadosUnidades, setDadosUnidades] = useState([]);
-  const [_dadosUnidades, set_DadosUnidades] = useState([]);
+  const [dadosUsuarios, setdadosUsuarios] = useState([]);
+  const [_dadosUsuarios, set_dadosUsuarios] = useState([]);
   const [isFiltro, setIsFiltro] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [addUnidades, setAddUnidades] = useState(false);
-  const [editarUnidade, setEditarUnidade] = useState(false);
-  const [dadosUnidadeEditar, setDadosUnidadeEditar] = useState([]);
+  const [addUsuario, setaddUsuario] = useState(false);
+  const [editarUsuario, seteditarUsuario] = useState(false);
+  const [dadosUsuariosEditar, setdadosUsuariosEditar] = useState([]);
   const [atualizarTabela , setAtualizarTabela]  = useState(false);
 
   const headers = [
-    { value: "Unidade", objectValue: "identificacao" },
-    { value: "Descrição", objectValue: "descricao" },
+    { value: "Nome", objectValue: "nome" },
+    { value: "Perfil", objectValue: "perfil" },
+    { value: "Email", objectValue: "email" },
+    { value: "Codigo Cadastro", objectValue: "codigoCadastro" },
+    { value: "Status", objectValue: "ativo" },
   ];
 
   const handleDelete = (item) => {
-    showQuestion("Tem certeza?", "Tem certeza que deseja excluir o registro? Esta ação é irreversível", "info",
+    showQuestion("Tem certeza?", "Tem certeza que deseja excluir esse usuário? Esta ação é irreversível", "info",
       (confirmation) => {
         if (confirmation) {
           setLoading(true);
-          api.delete("/Unidades/delete", item.id).then((result) => {
-            if (result.status !== 200) throw new Error("Houve um erro ao tentar deletar a unidade!");
+          api.delete("/Receituario/delete", item.id).then((result) => {
+            if (result.status !== 200) throw new Error("Houve um erro ao tentar excluir o usuário!");
               
-            showMessage( "Sucesso", "Unidade deletada com sucesso!", "success", null);
+            showMessage( "Sucesso", "Usuário excluído com sucesso!", "success", null);
             setLoading(false);
             setAtualizarTabela(true)
           })
@@ -48,21 +51,22 @@ export default function Unidades() {
     );
   }
   
-  const handleEditar = (item) => {
-    setDadosUnidadeEditar(item)
-    setEditarUnidade(true)
+  const handleEditar = (item) => {    
+    setdadosUsuariosEditar(item)
+    seteditarUsuario(true)
   }
  
+  // Ações da tabela
   const actions = [
     { icon: "bi bi-x-circle-fill text-white", color: "danger", action: handleDelete},
     { icon: "bi bi-pencil-square text-white", color: "warning", action: handleEditar},
   ];
 
   // Filtros
-  const [unidadeFiltro, setUnidadeFiltro] = useState("");
+  const [UsuarioFiltro, setUsuarioFiltro] = useState("");
 
-  const handleUnidadeChange = (event) => {
-    setUnidadeFiltro(event.target.value);
+  const handleMedicamentoChange = (event) => {
+    setUsuarioFiltro(event.target.value);
   };
 
   useEffect(() => {
@@ -70,13 +74,9 @@ export default function Unidades() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        api.get("/Unidades/getAll").then((result) => {
-          result.data.map((m) => {
-            m.concentracao = `${m.concentracao} ${m.unidade}`;
-          });
-
-          setDadosUnidades(result.data);
-          set_DadosUnidades(result.data);
+        await api.get("/Usuarios/getAll").then((result) => {
+          setdadosUsuarios(result.data);
+          set_dadosUsuarios(result.data);
           setLoading(false);
         });
       } catch (error) {
@@ -86,49 +86,48 @@ export default function Unidades() {
     };
 
     fetchData();
-  }, [addUnidades, setAddUnidades, atualizarTabela]);
+  }, [addUsuario, setaddUsuario, atualizarTabela]);
 
   const handleFiltro = () => {
     // Resetar os dados para o estado original
-    setDadosUnidades(dadosUnidades);
+    setdadosUsuarios(dadosUsuarios);
 
     // Verificar se algum filtro foi preenchido
-    if (unidadeFiltro === "") {
+    if (
+      UsuarioFiltro === ""
+    ) {
       showMessage("Aviso", "Informe ao menos um dos campos!", "error", null);
       return;
     }
 
     // Criar uma cópia dos dados originais para aplicar os filtros
-    let dadosFiltrados = [...dadosUnidades];
+    let dadosFiltrados = [...dadosUsuarios];
 
-    if (unidadeFiltro.trim() !== "") {
+    if (UsuarioFiltro.trim() !== "") {
       dadosFiltrados = dadosFiltrados.filter((item) =>
-        item.identificacao
+        item.nome
           .toLowerCase()
-          .includes(unidadeFiltro.trim().toLowerCase())
+          .includes(UsuarioFiltro.trim().toLowerCase())
       );
-      dadosFiltrados.sort((a, b) => {
-        return a.identificacao - b.identificacao;
-      });
     }
 
     setIsFiltro(true);
-    setDadosUnidades(dadosFiltrados);
+    setdadosUsuarios(dadosFiltrados);
+  };
+
+  const handleaddUsuarios = () => {
+    setaddUsuario(true);
   };
 
   const handleLimparFiltro = () => {
-    setUnidadeFiltro("");
-    setDadosUnidades(_dadosUnidades);
+    setUsuarioFiltro("");
+    setdadosUsuarios(_dadosUsuarios);
     setIsFiltro(false);
   };
 
-  const handleAddUnidades = () => {
-    setAddUnidades(true);
-  };
-
   const handleReturn = () => {
-    setAddUnidades(false)
-    setEditarUnidade(false)
+    setaddUsuario(false)
+    seteditarUsuario(false)
     setAtualizarTabela(true)
   }
 
@@ -136,27 +135,35 @@ export default function Unidades() {
     <Container>
       {loading && <Loading />}
       <Row className="justify-content-md-center">
-        <Col className="d-flex justify-content-center">
-          <h1 className="title-page">Unidades</h1>
+        <Col className="d-flex justify-content-center" >
+          <h1 className="title-page">Usuários</h1>
         </Col>
       </Row>
-      {!addUnidades && !editarUnidade && (
+      {!addUsuario && !editarUsuario && (
         <>
           <Row>
             <Col md>
               <h4>Filtros</h4>
             </Col>
           </Row>
-          <Form className="text-black mb-4 shadow p-3 mb-5 bg-white rounded">
+          <Form
+            className="text-black mb-4 shadow p-3 mb-5 bg-white rounded"
+            style={{
+              borderRadius: "15px",
+              padding: "20px",
+            }}
+          >
             <Row className="filtros">
               <Col md="3">
                 <Form.Group className="mb-3">
-                  <Form.Label>Unidade</Form.Label>
+                  <Form.Label>Nome</Form.Label>
                   <Form.Control
                     type="text"
                     placeholder=""
-                    value={unidadeFiltro}
-                    onChange={(e) => {handleUnidadeChange(e)}}
+                    value={UsuarioFiltro}
+                    onChange={(e) => {
+                      handleMedicamentoChange(e);
+                    }}
                   />
                 </Form.Group>
               </Col>
@@ -166,7 +173,7 @@ export default function Unidades() {
                   variant="info"
                   style={{ backgroundColor: "#3F8576", borderColor: "#3F8576" }}
                   onClick={handleFiltro}
-                >
+                  >
                   <i className="bi bi-funnel"></i> Filtrar
                 </Button>{" "}
                 {isFiltro && (
@@ -174,7 +181,7 @@ export default function Unidades() {
                     <Button
                       className="m-3 mb-0 mt-2 text-white"
                       variant="info"
-                      style={{backgroundColor: "#50BF84", borderColor: "#50BF84",}}
+                      style={{ backgroundColor: "#50BF84", borderColor: "#50BF84" }}
                       onClick={handleLimparFiltro}
                     >
                       <i className="bi bi-eraser"></i> Limpar Filtros
@@ -183,40 +190,44 @@ export default function Unidades() {
                 )}
               </Col>
             </Row>
-            <Row>
-            </Row>
           </Form>
-          {!addUnidades && !editarUnidade && (
+          {!addUsuario && !editarUsuario && (
             <Row>
               <Col>
                 <Button
                   className="m-3 mb-0 mt-2 text-white"
                   variant="info"
                   style={{ backgroundColor: "#3F8576", borderColor: "#3F8576" }}
-                  onClick={handleAddUnidades}
+                  onClick={handleaddUsuarios}
                 >
                   <i className="bi bi-plus"></i> Cadastrar
                 </Button>{" "}
               </Col>
             </Row>
           )}
-          <Form className="text-black mb-4 shadow p-3 mb-5 bg-white rounded">
+          <Form
+            className="text-black mb-4 shadow p-3 mb-5 bg-white rounded"
+            style={{
+              borderRadius: "15px",
+              padding: "20px",
+            }}
+          >
             <Row className="justify-content-center">
               <Col>
-                <TabelaListagem headers={headers} itens={dadosUnidades} actions={actions} />
+                <TabelaListagem headers={headers} itens={dadosUsuarios} actions={actions} />
               </Col>
             </Row>
           </Form>
         </>
       )}
-      {addUnidades && (
+      {addUsuario && (
         <Form className="text-black mb-4 shadow p-3 mb-5 bg-white rounded">
-          <AddUnidades handleReturn={handleReturn} />
+          <AddUsuarios handleReturn={handleReturn} />
         </Form>
       )}
-      {editarUnidade && (
-        <Form className="text-black mb-4 shadow p-3 mb-5 bg-white rounded">
-          <AddUnidades handleReturn={handleReturn} dadosEdicao={dadosUnidadeEditar} />
+      {editarUsuario && (
+          <Form className="text-black mb-4 shadow p-3 mb-5 bg-white rounded">
+            <AddUsuarios handleReturn={handleReturn} dadosEdicao={dadosUsuariosEditar} />
         </Form>
       )}
     </Container>

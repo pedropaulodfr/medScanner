@@ -32,16 +32,17 @@ namespace authentication_jwt.Services
             var dados = await _dbContext.CartaoControles
                                             .Include(x => x.Medicamento)
                                                 .ThenInclude(y => y.Unidade)
-                                            .AsNoTracking().ToListAsync();
+                                            .AsNoTracking()
+                                            .Where(x => x.DataRetorno >= DateTime.Now && x.DataRetorno <= DateTime.Now.AddDays(30))
+                                            .ToListAsync();
 
-            var proximosAoRetorno = dados.Where(x => x.DataRetorno >= DateTime.Now.AddDays(-30))
-                            .Select(y => new CardsDashboardDTO
-                            {
-                                CartaoControleId = y.Id,
-                                DataRetorno = y.DataRetorno,
-                                Medicamento = string.Format("{0} {1} {2}", y.Medicamento.Identificacao, y.Medicamento.Concentracao,  y.Medicamento.Unidade.Identificacao),
-                                Quantidade = dados.Count()
-                            }).ToList();
+            var proximosAoRetorno = dados.Select(y => new CardsDashboardDTO
+            {
+                CartaoControleId = y.Id,
+                DataRetorno = y.DataRetorno,
+                Medicamento = string.Format("{0} {1} {2}", y.Medicamento.Identificacao, y.Medicamento.Concentracao,  y.Medicamento.Unidade.Identificacao),
+                Quantidade = dados.Count()
+            }).ToList();
 
             return proximosAoRetorno;
         }

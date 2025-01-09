@@ -106,7 +106,8 @@ const AddMedicamentos = ({ handleReturn, dadosEdicao = [] }) => {
       try {
         setLoading(true);
         api.get("/TipoMedicamentos/getAll").then((result) => {
-          setTiposMedicamentos(result.data);
+          const dadosOrdenados = result.data.sort((a, b) => a.identificacao.localeCompare(b.identificacao));
+          setTiposMedicamentos(dadosOrdenados);
           setLoading(false);
         });
 
@@ -182,7 +183,7 @@ const AddMedicamentos = ({ handleReturn, dadosEdicao = [] }) => {
             variant="secondary"
             onClick={handleReturn}
           >
-            <i class="bi bi-arrow-left"></i> Voltar
+            <i className="bi bi-arrow-left"></i> Voltar
           </Button>{" "}
         </Col>
       </Row>
@@ -287,7 +288,7 @@ const AddMedicamentos = ({ handleReturn, dadosEdicao = [] }) => {
             style={{ backgroundColor: "#3F8576", borderColor: "#3F8576" }}
             onClick={onSubmit}
           >
-            <i class="bi bi-plus"></i> Salvar
+            <i className="bi bi-plus"></i> Salvar
           </Button>{" "}
           {Object.keys(_dadosMedicamentos).length > 0 && (
             <>
@@ -297,7 +298,7 @@ const AddMedicamentos = ({ handleReturn, dadosEdicao = [] }) => {
                 style={{ backgroundColor: "#50BF84", borderColor: "#50BF84" }}
                 onClick={handleLimparCampos}
               >
-                <i class="bi bi-eraser"></i> Limpar Campos
+                <i className="bi bi-eraser"></i> Limpar Campos
               </Button>{" "}
             </>
           )}

@@ -60,6 +60,7 @@ builder.Services.AddScoped<MedicamentosService>();
 builder.Services.AddScoped<ReceituarioService>();
 builder.Services.AddScoped<CartaoControleService>();
 builder.Services.AddScoped<DashboardService>();
+builder.Services.AddScoped<UsuariosService>();
 
 var app = builder.Build();
 

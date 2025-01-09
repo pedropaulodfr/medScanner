@@ -70,7 +70,7 @@ function Sidebar({ sidebarStatus }) {
                 {menus.map((menu, key) => {
                   if (!menu.submenus) {
                     return (
-                      <li className="nav-item text-while fs-4 my-1 py-2 py-sm-0">
+                      <li key={key} className="nav-item text-while fs-4 my-1 py-2 py-sm-0">
                         <a
                           onClick={() => handleHome(menu.path)}
                           className="nav-link text-white fs-5"
@@ -86,6 +86,7 @@ function Sidebar({ sidebarStatus }) {
                   } else {
                     return (
                       <Accordion
+                        key={key}
                         activeKey={activeKey}
                         style={{ backgroundColor: "transparent" }}
                       >
@@ -102,7 +103,7 @@ function Sidebar({ sidebarStatus }) {
                           <Accordion.Body>
                             {menu.submenus.map((submenu, key) => {
                               return (
-                                <li className="nav-item text-while fs-4 my-1 py-2 py-sm-0">
+                                <li key={key} className="nav-item text-while fs-4 my-1 py-2 py-sm-0">
                                   <a
                                     onClick={() => handleHome(submenu.path)}
                                     className="nav-link text-white fs-5 p-2"
@@ -124,9 +125,9 @@ function Sidebar({ sidebarStatus }) {
                 })}
               </ul>
             </div>
-            <div class="dropdown open">
+            <div className="dropdown open">
               <a
-                class="text-decoration-none text-white dropdown-toggle p-3"
+                className="text-decoration-none text-white dropdown-toggle p-3"
                 type="button"
                 id="triggerId"
                 data-bs-toggle="dropdown"
@@ -136,18 +137,18 @@ function Sidebar({ sidebarStatus }) {
                 <i className="bi bi-person-circle"></i>
                 <span className="ms-2 d-none d-sm-inline">Meu Perfil</span>
               </a>
-              <div class="dropdown-menu item" aria-labelledby="triggerId">
+              <div className="dropdown-menu item" aria-labelledby="triggerId">
                 {true ? (
                   <>
-                    <a class="dropdown-item" href="#">
+                    <a className="dropdown-item" href="#">
                       Perfil
                     </a>
-                    <a class="dropdown-item" onClick={handleLogout}>
+                    <a className="dropdown-item" onClick={handleLogout}>
                       Sair
                     </a>
                   </>
                 ) : (
-                  <a class="dropdown-item" onClick={handleLogin}>
+                  <a className="dropdown-item" onClick={handleLogin}>
                     Login
                   </a>
                 )}
@@ -158,7 +159,7 @@ function Sidebar({ sidebarStatus }) {
       ) : (
         <div>
           <i
-            class="bi bi-list"
+            className="bi bi-list"
             style={{ fontSize: "2em", color: "#fff", cursor: "pointer" }}
             onClick={handleSidebarStatus}
           ></i>

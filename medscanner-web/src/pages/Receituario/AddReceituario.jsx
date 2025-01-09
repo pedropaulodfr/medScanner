@@ -48,7 +48,8 @@ const AddReceituarios = ({ handleReturn, dadosEdicao = [] }) => {
       try {
         setLoading(true);
         api.get("/Medicamentos/getAll").then((result) => {
-          setListaMedicamentos(result.data);
+          const dadosOrdenados = result.data.sort((a, b) => a.identificacao.localeCompare(b.identificacao));
+          setListaMedicamentos(dadosOrdenados);
           setLoading(false);
         });
 
@@ -136,17 +137,6 @@ const AddReceituarios = ({ handleReturn, dadosEdicao = [] }) => {
     });
   };
   
-  /* const handleTipoChange = (id) => {
-    setTipoId(id);
-    setDadosReceituario({
-      ...dadosReceituario,
-      medicamento: {
-        ...dadosReceituario.medicamento,
-        tipoMedicamentoId: id
-      },
-    });
-  }; */
- 
   const handleLimparCampos = () => {
     setMedicamentoId(0)
     setFrequencia("")
@@ -227,7 +217,7 @@ const AddReceituarios = ({ handleReturn, dadosEdicao = [] }) => {
             variant="secondary"
             onClick={handleReturn}
           >
-            <i class="bi bi-arrow-left"></i> Voltar
+            <i className="bi bi-arrow-left"></i> Voltar
           </Button>{" "}
         </Col>
       </Row>
@@ -348,7 +338,7 @@ const AddReceituarios = ({ handleReturn, dadosEdicao = [] }) => {
             style={{ backgroundColor: "#3F8576", borderColor: "#3F8576" }}
             onClick={onSubmit}
           >
-            <i class="bi bi-plus"></i> Salvar
+            <i className="bi bi-plus"></i> Salvar
           </Button>{" "}
           {Object.keys(dadosReceituario).length > 0 && (
             <>
@@ -358,7 +348,7 @@ const AddReceituarios = ({ handleReturn, dadosEdicao = [] }) => {
                 style={{ backgroundColor: "#50BF84", borderColor: "#50BF84" }}
                 onClick={handleLimparCampos}
               >
-                <i class="bi bi-eraser"></i> Limpar Campos
+                <i className="bi bi-eraser"></i> Limpar Campos
               </Button>{" "}
             </>
           )}

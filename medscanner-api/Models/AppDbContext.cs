@@ -19,6 +19,8 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Medicamento> Medicamentos { get; set; }
 
+    public virtual DbSet<Paciente> Pacientes { get; set; }
+
     public virtual DbSet<Receituario> Receituarios { get; set; }
 
     public virtual DbSet<TipoMedicamento> TipoMedicamentos { get; set; }
@@ -69,6 +71,59 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("FK_Medicamentos_Unidades");
         });
 
+        modelBuilder.Entity<Paciente>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Paciente__3214EC0725924F7D");
+
+            entity.Property(e => e.Bairro)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.Cep)
+                .HasMaxLength(9)
+                .IsUnicode(false)
+                .HasColumnName("CEP");
+            entity.Property(e => e.Cns)
+                .HasMaxLength(15)
+                .IsUnicode(false)
+                .HasColumnName("CNS");
+            entity.Property(e => e.Complemento)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.Cpf)
+                .HasMaxLength(17)
+                .IsUnicode(false)
+                .HasColumnName("CPF");
+            entity.Property(e => e.DataNascimento).HasColumnType("date");
+            entity.Property(e => e.Email)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.Logradouro)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.Nome)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.NomeCompleto)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.Numero)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.PlanoSaude)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.Uf)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .HasColumnName("UF");
+            entity.Property(e => e.UsuariosId).HasColumnName("Usuarios_Id");
+
+            entity.HasOne(d => d.Usuarios).WithMany(p => p.Pacientes)
+                .HasForeignKey(d => d.UsuariosId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Pacientes_Usuarios");
+        });
+
         modelBuilder.Entity<Receituario>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_Receituario_1");
@@ -115,56 +170,22 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Usuario>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Usuarios__3214EC073A40E893");
-
-            entity.Property(e => e.Bairro)
-                .HasMaxLength(100)
+            entity.Property(e => e.CodigoCadastro)
+                .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.Cep)
-                .HasMaxLength(9)
-                .IsUnicode(false)
-                .HasColumnName("CEP");
-            entity.Property(e => e.Cns)
-                .HasMaxLength(15)
-                .IsUnicode(false)
-                .HasColumnName("CNS");
-            entity.Property(e => e.Complemento)
-                .HasMaxLength(100)
-                .IsUnicode(false);
-            entity.Property(e => e.Cpfcnpj)
-                .HasMaxLength(17)
-                .IsUnicode(false)
-                .HasColumnName("CPFCNPJ");
-            entity.Property(e => e.DataNascimento).HasColumnType("date");
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .IsUnicode(false);
             entity.Property(e => e.ImagemPerfil).HasColumnType("text");
-            entity.Property(e => e.Logradouro)
-                .HasMaxLength(100)
-                .IsUnicode(false);
             entity.Property(e => e.Nome)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.NomeCompleto)
                 .HasMaxLength(200)
                 .IsUnicode(false);
-            entity.Property(e => e.Numero)
-                .HasMaxLength(50)
-                .IsUnicode(false);
             entity.Property(e => e.Perfil)
-                .HasMaxLength(25)
-                .IsUnicode(false);
-            entity.Property(e => e.PlanoSaude)
-                .HasMaxLength(100)
+                .HasMaxLength(13)
                 .IsUnicode(false);
             entity.Property(e => e.Senha)
                 .HasMaxLength(100)
                 .IsUnicode(false);
-            entity.Property(e => e.Uf)
-                .HasMaxLength(2)
-                .IsUnicode(false)
-                .HasColumnName("UF");
         });
 
         OnModelCreatingPartial(modelBuilder);
