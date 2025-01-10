@@ -38,7 +38,7 @@ export default function Usuarios() {
       (confirmation) => {
         if (confirmation) {
           setLoading(true);
-          api.delete("/Receituario/delete", item.id).then((result) => {
+          api.delete("/Usuarios/delete", item.id).then((result) => {
             if (result.status !== 200) throw new Error("Houve um erro ao tentar excluir o usuário!");
               
             showMessage( "Sucesso", "Usuário excluído com sucesso!", "success", null);

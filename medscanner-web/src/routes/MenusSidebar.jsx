@@ -47,17 +47,20 @@ var menus = [
   {
     name: "Parâmetros",
     icon: "bi bi-gear",
+    modulo: ["Admin"],
     submenus: [
       {
         path: "/unidades",
         name: "Unidades",
         icon: "bi bi-rulers",
+        modulo: ["Admin"],
         component: Unidades,
       },
       {
         path: "/tipoMedicamento",
         name: "Tipos",
         icon: "bi bi-capsule",
+        modulo: ["Admin"],
         component: TipoMedicamento,
       },
     ]
@@ -66,6 +69,7 @@ var menus = [
     path: "/usuarios",
     name: "Usuários",
     icon: "bi bi-people",
+    modulo: ["Admin"],
     component: Usuarios,
   },
 ];

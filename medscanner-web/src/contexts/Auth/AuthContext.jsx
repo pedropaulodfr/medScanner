@@ -9,6 +9,8 @@ export const AuthProvider = ({ children }) => {
     const storageData = localStorage.getItem("authToken");
     return !!storageData; // Definir isLoggedIn com base na presença do token no localStorage
   });
+
+  const [_user, set_User] = useState([])
   
   const api = useApi();
 
@@ -33,12 +35,12 @@ export const AuthProvider = ({ children }) => {
       .catch((error) => {
         return error;
       });
-  
-    if (response.data?.user && response.data?.token) {
-      setToken(response.data.token)
-      setIsLoggedIn(true)
-      return { success: true, statusCode: response.status }
-    }
+      if (response.data?.user && response.data?.token) {
+        set_User(response.data.user);
+        setToken(response.data.token)
+        setIsLoggedIn(true)
+        return { success: true, statusCode: response.status }
+      }
     setIsLoggedIn(false)
     return { success: false, statusCode: 500 }
   };
@@ -55,7 +57,7 @@ export const AuthProvider = ({ children }) => {
 };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, login, logout, _user }}>
       {children}
     </AuthContext.Provider>
   );

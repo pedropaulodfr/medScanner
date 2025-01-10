@@ -69,58 +69,64 @@ function Sidebar({ sidebarStatus }) {
               <ul className="nav nav-pills flex-column mt-3 mt-sm-0">
                 {menus.map((menu, key) => {
                   if (!menu.submenus) {
-                    return (
-                      <li key={key} className="nav-item text-while fs-4 my-1 py-2 py-sm-0">
-                        <a
-                          onClick={() => handleHome(menu.path)}
-                          className="nav-link text-white fs-5"
-                          aria-current="page"
-                        >
-                          <i className={menu.icon}></i>
-                          <span className="ms-3 d-none d-sm-inline">
-                            {menu.name}
-                          </span>
-                        </a>
-                      </li>
-                    );
-                  } else {
-                    return (
-                      <Accordion
-                        key={key}
-                        activeKey={activeKey}
-                        style={{ backgroundColor: "transparent" }}
-                      >
-                        <Accordion.Item
-                          eventKey="0"
-                          style={{ backgroundColor: "transparent" }}
-                        >
-                          <Accordion.Header onClick={() => toggleAccordion("0")}>
+                    if (!menu.modulo || menu?.modulo?.filter(f => f == auth._user.perfil).length > 0) {
+                      return (
+                        <li key={key} className="nav-item text-while fs-4 my-1 py-2 py-sm-0">
+                          <a
+                            onClick={() => handleHome(menu.path)}
+                            className="nav-link text-white fs-5"
+                            aria-current="page"
+                          >
                             <i className={menu.icon}></i>
-                            <span className="ms-3 fs-5 d-none d-sm-inline">
+                            <span className="ms-3 d-none d-sm-inline">
                               {menu.name}
                             </span>
-                          </Accordion.Header>
-                          <Accordion.Body>
-                            {menu.submenus.map((submenu, key) => {
-                              return (
-                                <li key={key} className="nav-item text-while fs-4 my-1 py-2 py-sm-0">
-                                  <a
-                                    onClick={() => handleHome(submenu.path)}
-                                    className="nav-link text-white fs-5 p-2"
-                                    aria-current="page"
-                                  >
-                                    <i className={submenu.icon}></i>
-                                    <span className="ms-3 d-none d-sm-inline">
-                                      {submenu.name}
-                                    </span>
-                                  </a>
-                                </li>
-                              );
-                            })}
-                          </Accordion.Body>
-                        </Accordion.Item>
-                      </Accordion>
-                    );
+                          </a>
+                        </li>
+                      );
+                    }
+                  } else {
+                    if (!menu.modulo || menu?.modulo?.filter(f => f == auth._user.perfil).length > 0) {
+                      return (
+                        <Accordion
+                          key={key}
+                          activeKey={activeKey}
+                          style={{ backgroundColor: "transparent" }}
+                        >
+                          <Accordion.Item
+                            eventKey="0"
+                            style={{ backgroundColor: "transparent" }}
+                          >
+                            <Accordion.Header onClick={() => toggleAccordion("0")}>
+                              <i className={menu.icon}></i>
+                              <span className="ms-3 fs-5 d-none d-sm-inline">
+                                {menu.name}
+                              </span>
+                            </Accordion.Header>
+                            <Accordion.Body>
+                              {menu.submenus.map((submenu, key) => {
+                                if (!submenu.modulo || submenu?.modulo?.filter(f => f == auth._user.perfil).length > 0) {
+                                  return (
+                                    <li key={key} className="nav-item text-while fs-4 my-1 py-2 py-sm-0">
+                                      <a
+                                        onClick={() => handleHome(submenu.path)}
+                                        className="nav-link text-white fs-5 p-2"
+                                        aria-current="page"
+                                      >
+                                        <i className={submenu.icon}></i>
+                                        <span className="ms-3 d-none d-sm-inline">
+                                          {submenu.name}
+                                        </span>
+                                      </a>
+                                    </li>
+                                  );
+                                }
+                              })}
+                            </Accordion.Body>
+                          </Accordion.Item>
+                        </Accordion>
+                      );
+                    }
                   }
                 })}
               </ul>
