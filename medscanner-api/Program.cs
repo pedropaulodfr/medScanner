@@ -32,7 +32,11 @@ builder.Services.AddControllers();
 
 var key = Encoding.ASCII.GetBytes(authentication_jwt.Settings.Secret);
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(x => 
+{
+    x.AddPolicy("PerfilPolicy", p => p.RequireAuthenticatedUser().RequireClaim("Perfil", "Admin"));
+});
+
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

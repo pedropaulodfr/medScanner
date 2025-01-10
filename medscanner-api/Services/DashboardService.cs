@@ -57,7 +57,7 @@ namespace authentication_jwt.Services
             /* CC = Cartão de Controle | R = Receituário
             Fórmula para calcular a quantidade:
             Quantidade = CC.quantidade - ((dataHoje - CC.data) x R.dose x R.frequencia) */
-            var retorno = dados.GroupBy(x => x.MedicamentoId ).Select(y => new EstoqueMedicamentosDashboardDTO
+            var result = dados.GroupBy(x => x.MedicamentoId ).Select(y => new EstoqueMedicamentosDashboardDTO
             {
                 Medicamento = string.Format("{0} {1} {2}", y.First().Medicamento.Identificacao, y.First().Medicamento.Concentracao,  y.First().Medicamento.Unidade.Identificacao),
                 Quantidade = (
@@ -72,6 +72,17 @@ namespace authentication_jwt.Services
                         .FirstOrDefault()
                 )
             }).ToList();
+
+            // Retornar Zero caso o valor do estoque seja negativo
+            var retorno = new List<EstoqueMedicamentosDashboardDTO>();
+            foreach (var item in result)
+            {
+                retorno.Add(new EstoqueMedicamentosDashboardDTO
+                {
+                    Medicamento = item.Medicamento,
+                    Quantidade = item.Quantidade < 0 ? 0 : item.Quantidade
+                });
+            }
 
             return retorno;
         }

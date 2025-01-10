@@ -16,7 +16,7 @@ namespace authentication_jwt.Controllers
             _usuariosService = usuariosService;
         }
 
-        [Authorize]
+        [Authorize(Policy = "PerfilPolicy")]
         [HttpGet]
         [Route("getAll")]
         public async Task<ActionResult> GetAll()
@@ -33,6 +33,7 @@ namespace authentication_jwt.Controllers
             }
         }
 
+        [Authorize(Policy = "PerfilPolicy")]
         [HttpPost]
         [Route("insert")]
         public async Task<ActionResult> Insert([FromBody] UsuarioDTO model)
@@ -47,6 +48,7 @@ namespace authentication_jwt.Controllers
             }
         }
         
+        [Authorize(Policy = "PerfilPolicy")]
         [HttpPut]
         [Route("update")]
         public async Task<ActionResult> Update([FromBody] UsuarioDTO model)
@@ -61,6 +63,7 @@ namespace authentication_jwt.Controllers
             }
         }
         
+        [Authorize(Policy = "PerfilPolicy")]
         [HttpDelete]
         [Route("delete/{id}")]
         public async Task<ActionResult> Delete(long id)
