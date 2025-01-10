@@ -45,15 +45,15 @@ function Sidebar({ sidebarStatus }) {
   };
 
   return (
-    <div className="container-fluid col-auto">
+    <div className="container-fluid col-auto" style={{height: "100%"}}>
       {loading && <Loading />}
       {!sidebarClose ? (
-        <div className="row">
+        <div className="row" style={{height: "100%"}}>
           <div
             className="col-auto min-vh-100 d-flex justify-content-between flex-column"
-            style={{ backgroundColor: "#008952" }}
+            style={{ backgroundColor: "#008952", height: "100%" }}
           >
-            <div className="">
+            <div className="" style={{height: "100%"}}>
               <div className="sidebar-cabecalho">
                 <a className="text-decoration-none text-white d-none d-sm-inline d-flex align-itemcenter ms-4 mt-3">
                   <span
@@ -66,70 +66,72 @@ function Sidebar({ sidebarStatus }) {
                 <CloseButton variant="white" onClick={handleSidebarStatus} />
               </div>
               <hr className="text-white d-none d-sm-block" />
-              <ul className="nav nav-pills flex-column mt-3 mt-sm-0">
-                {menus.map((menu, key) => {
-                  if (!menu.submenus) {
-                    if (!menu.modulo || menu?.modulo?.filter(f => f == auth._user.perfil).length > 0) {
-                      return (
-                        <li key={key} className="nav-item text-while fs-4 my-1 py-2 py-sm-0">
-                          <a
-                            onClick={() => handleHome(menu.path)}
-                            className="nav-link text-white fs-5"
-                            aria-current="page"
-                          >
-                            <i className={menu.icon}></i>
-                            <span className="ms-3 d-none d-sm-inline">
-                              {menu.name}
-                            </span>
-                          </a>
-                        </li>
-                      );
-                    }
-                  } else {
-                    if (!menu.modulo || menu?.modulo?.filter(f => f == auth._user.perfil).length > 0) {
-                      return (
-                        <Accordion
-                          key={key}
-                          activeKey={activeKey}
-                          style={{ backgroundColor: "transparent" }}
-                        >
-                          <Accordion.Item
-                            eventKey="0"
-                            style={{ backgroundColor: "transparent" }}
-                          >
-                            <Accordion.Header onClick={() => toggleAccordion("0")}>
+              <div className="pages-content" style={{overflow: "auto", height: "100%"}}>
+                <ul className="nav nav-pills flex-column mt-3 mt-sm-0">
+                  {menus.map((menu, key) => {
+                    if (!menu.submenus) {
+                      if (!menu.modulo || menu?.modulo?.filter(f => f == auth._user.perfil).length > 0) {
+                        return (
+                          <li key={key} className="nav-item text-while fs-4 my-1 py-2 py-sm-0">
+                            <a
+                              onClick={() => handleHome(menu.path)}
+                              className="nav-link text-white fs-5"
+                              aria-current="page"
+                            >
                               <i className={menu.icon}></i>
-                              <span className="ms-3 fs-5 d-none d-sm-inline">
+                              <span className="ms-3 d-none d-sm-inline">
                                 {menu.name}
                               </span>
-                            </Accordion.Header>
-                            <Accordion.Body>
-                              {menu.submenus.map((submenu, key) => {
-                                if (!submenu.modulo || submenu?.modulo?.filter(f => f == auth._user.perfil).length > 0) {
-                                  return (
-                                    <li key={key} className="nav-item text-while fs-4 my-1 py-2 py-sm-0">
-                                      <a
-                                        onClick={() => handleHome(submenu.path)}
-                                        className="nav-link text-white fs-5 p-2"
-                                        aria-current="page"
-                                      >
-                                        <i className={submenu.icon}></i>
-                                        <span className="ms-3 d-none d-sm-inline">
-                                          {submenu.name}
-                                        </span>
-                                      </a>
-                                    </li>
-                                  );
-                                }
-                              })}
-                            </Accordion.Body>
-                          </Accordion.Item>
-                        </Accordion>
-                      );
+                            </a>
+                          </li>
+                        );
+                      }
+                    } else {
+                      if (!menu.modulo || menu?.modulo?.filter(f => f == auth._user.perfil).length > 0) {
+                        return (
+                          <Accordion
+                            key={key}
+                            activeKey={activeKey}
+                            style={{ backgroundColor: "transparent" }}
+                          >
+                            <Accordion.Item
+                              eventKey="0"
+                              style={{ backgroundColor: "transparent" }}
+                            >
+                              <Accordion.Header onClick={() => toggleAccordion("0")}>
+                                <i className={menu.icon}></i>
+                                <span className="ms-3 fs-5 d-none d-sm-inline">
+                                  {menu.name}
+                                </span>
+                              </Accordion.Header>
+                              <Accordion.Body>
+                                {menu.submenus.map((submenu, key) => {
+                                  if (!submenu.modulo || submenu?.modulo?.filter(f => f == auth._user.perfil).length > 0) {
+                                    return (
+                                      <li key={key} className="nav-item text-while fs-4 my-1 py-2 py-sm-0">
+                                        <a
+                                          onClick={() => handleHome(submenu.path)}
+                                          className="nav-link text-white fs-5 p-2"
+                                          aria-current="page"
+                                        >
+                                          <i className={submenu.icon}></i>
+                                          <span className="ms-3 d-none d-sm-inline">
+                                            {submenu.name}
+                                          </span>
+                                        </a>
+                                      </li>
+                                    );
+                                  }
+                                })}
+                              </Accordion.Body>
+                            </Accordion.Item>
+                          </Accordion>
+                        );
+                      }
                     }
-                  }
-                })}
-              </ul>
+                  })}
+                </ul>
+              </div>
             </div>
             <div className="dropdown open">
               <a

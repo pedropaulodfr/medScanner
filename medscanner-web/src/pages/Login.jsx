@@ -53,10 +53,10 @@ export const Login = () => {
       {loading && <Loading />}
       <Container>
         <Row className="justify-content-md-center">
-          <Col xs={6} md={4}>
+          <Col xs={12} md={4}>
             <Form
               className=""
-              style={{  borderRadius: "15px", padding: "20px", backgroundColor: "#D9E9E4", color: "#008952" }}
+              style={{  borderRadius: "15px", padding: "20px", backgroundColor: "#d9e9e4dc", color: "#008952" }}
             >
               <h2>Bem Vindo!</h2>
               <Form.Group
@@ -101,7 +101,6 @@ export const Login = () => {
                       backgroundColor: "#3F8576",
                       borderColor: "#D6EDE7",
                       color: "#ffffff",
-                      width: "8vw",
                       margin: "15px",
                     }}
                     size="lg"
