@@ -40,6 +40,7 @@ namespace authentication_jwt.Services
                         Email = paciente.Email,
                         Cpf = paciente.Cpf,
                         DataNascimento = paciente.DataNascimento,
+                        Endereco = string.Format(@"{0}, {1}, {2}, {3}, {4}, {5}, {6}", paciente.Logradouro, paciente.Numero, paciente.Complemento, paciente.Bairro, paciente.Cidade, paciente.Uf, paciente.Cep ),
                         Logradouro = paciente.Logradouro,
                         Bairro = paciente.Bairro,
                         Complemento = paciente.Complemento,
@@ -134,9 +135,12 @@ namespace authentication_jwt.Services
 
                 existUsuario.Perfil = model.Perfil;
                 existUsuario.Email = model.Email.Trim();
-                existUsuario.ImagemPerfil = model.ImagemPerfil;
                 existUsuario.CodigoCadastro = model.CodigoCadastro;
                 existUsuario.Ativo = model.Ativo == "Ativo" ? true : false;
+                if(!string.IsNullOrEmpty(model.ImagemPerfil))
+                    existUsuario.ImagemPerfil = model.ImagemPerfil;
+                if(!string.IsNullOrEmpty(model.Senha))
+                    existUsuario.Senha = model.Senha;
                 
                 await _dbContext.SaveChangesAsync();
 
@@ -147,6 +151,27 @@ namespace authentication_jwt.Services
                 throw new ArgumentException(ex.Message ?? ex.InnerException.ToString());
             }
         }
+
+        public async Task<UsuarioDTO> UpdateImagem(UsuarioDTO model)
+        {
+            try
+            {
+                var existUsuairo = await _dbContext.Usuarios.Where(x => x.Id == model.Id && x.Ativo).FirstOrDefaultAsync();
+                if (existUsuairo == null)
+                    throw new ArgumentException("Usuário não localizado!");
+
+                existUsuairo.ImagemPerfil = model.ImagemPerfil;
+                
+                await _dbContext.SaveChangesAsync();
+
+                return model;
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(ex.Message ?? ex.InnerException.ToString());
+            }
+        }
+        
         public async Task Delete(long id)
         {
             try

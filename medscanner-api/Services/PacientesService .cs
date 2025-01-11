@@ -59,7 +59,7 @@ namespace authentication_jwt.Services
 
         public async Task<List<PacienteDTO>> GetAll()
         {
-            List<Paciente> pacientes = await _dbContext.Pacientes.Where(x => x.Deletado != true).AsNoTracking().ToListAsync();
+            List<Paciente> pacientes = await _dbContext.Pacientes.Include(x => x.Usuarios).Where(x => x.Deletado != true).AsNoTracking().ToListAsync();
 
             var retorno = pacientes.Select(x => new PacienteDTO
             {
@@ -79,7 +79,18 @@ namespace authentication_jwt.Services
                 Endereco = string.Format(@"{0}, {1}, {2}, {3}, {4}, {5}, {6}", x.Logradouro, x.Numero, x.Complemento, x.Bairro, x.Cidade, x.Uf, x.Cep ),
                 Cns = x.Cns,
                 PlanoSaude = x.PlanoSaude,
-                UsuariosId = x.UsuariosId
+                UsuariosId = x.UsuariosId,
+                Usuarios = new UsuarioDTO
+                {
+                    Id = x.Usuarios.Id,
+                    Perfil = x.Usuarios.Perfil,
+                    Nome = x.Usuarios.Nome,
+                    Email = x.Usuarios.Email,
+                    ImagemPerfil = x.Usuarios.ImagemPerfil,
+                    CodigoCadastro = x.Usuarios.CodigoCadastro,
+                    Ativo = x.Usuarios.Ativo ? "Ativo" : "Inativo",
+                    Senha = x.Usuarios.Senha,
+                }
             }).ToList();
 
             return retorno;
@@ -160,6 +171,8 @@ namespace authentication_jwt.Services
                 existPaciente.PlanoSaude = model.PlanoSaude;
                 existPaciente.Usuarios.Nome = model.Nome;
                 existPaciente.Usuarios.Email = model.Email;
+                if (!string.IsNullOrEmpty(model.Usuarios.Senha))
+                    existPaciente.Usuarios.Senha = model.Usuarios.Senha;
                 
                 await _dbContext.SaveChangesAsync();
 
@@ -170,6 +183,7 @@ namespace authentication_jwt.Services
                 throw new ArgumentException(ex.Message ?? ex.InnerException.ToString());
             }
         }
+
         public async Task Delete(long id)
         {
             try

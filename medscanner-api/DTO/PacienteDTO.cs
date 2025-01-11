@@ -40,6 +40,6 @@ namespace authentication_jwt.DTO
 
         public long UsuariosId { get; set; }
 
-        public Usuario? Usuarios { get; set; } = null!;
+        public UsuarioDTO? Usuarios { get; set; } = null!;
     }
 }

@@ -75,6 +75,21 @@ namespace authentication_jwt.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [Authorize]
+        [HttpPut]
+        [Route("updateImagem")]
+        public async Task<ActionResult> UpdateImagem([FromBody] UsuarioDTO model)
+        {
+            try
+            {
+                return StatusCode(200, await _usuariosService.UpdateImagem(model));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
         
         [Authorize(Policy = "AdminPolicy")]
         [HttpDelete]

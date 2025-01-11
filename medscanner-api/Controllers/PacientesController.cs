@@ -61,7 +61,8 @@ namespace authentication_jwt.Controllers
             }
         }
         
-        [Authorize(Policy = "AdminPolicy")]
+        //[Authorize(Policy = "AdminPolicy")]
+        [Authorize]
         [HttpPut]
         [Route("update")]
         public async Task<ActionResult> Update([FromBody] PacienteDTO model)
