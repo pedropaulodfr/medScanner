@@ -154,9 +154,6 @@ const AddReceituarios = ({ handleReturn, dadosEdicao = [] }) => {
       tipoMedicamentoId: dadosReceituario.medicamento.tipoMedicamentoId
     }
 
-    console.log("_dadosValidacao", _dadosValidacao);
-    
-    
     const newErrors = ValidaCampos(campos, _dadosValidacao);
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors); // Atualiza o estado de erros

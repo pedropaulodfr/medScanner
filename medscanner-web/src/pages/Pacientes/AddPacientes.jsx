@@ -14,6 +14,7 @@ import { ValidaCampos } from "../../helpers/validacoes";
 import { useApi } from "../../api/useApi";
 import moment from "moment";
 import { InputCEP, InputCPF } from "../../helpers/mask";
+import { getSessionCookie } from "../../helpers/cookies";
 
 const AddPacientes = ({ handleReturn, dadosEdicao = [] }) => {
   const api = useApi();
@@ -38,6 +39,10 @@ const AddPacientes = ({ handleReturn, dadosEdicao = [] }) => {
     { nome: "cep", type: "text" },
   ];
 
+  // Estado dos campos de senha
+  const [novaSenha, setNovaSenha] = useState("")
+  const [confirmarSenha, setConfirmarSenha] = useState("")
+
   const onBlurCep = (event) => {
     try {
       setLoading(true);
@@ -60,7 +65,7 @@ const AddPacientes = ({ handleReturn, dadosEdicao = [] }) => {
     }
   }
 
-useEffect(() => {
+  useEffect(() => {
     if (Object.keys(dadosEdicao).length > 0) {
         setDadosPaciente({
             ...dadosPaciente,
@@ -69,7 +74,7 @@ useEffect(() => {
             nomeCompleto: dadosEdicao.nomeCompleto,
             cpf: dadosEdicao.cpf,
             email: dadosEdicao.email,
-            dataNascimento: moment(dadosEdicao.dataNascimento, 'DD/MM/YYYY').format("YYYY-MM-DD") ,
+            dataNascimento: moment(dadosEdicao.dataNascimento).format("YYYY-MM-DD") ,
             logradouro: dadosEdicao.logradouro,
             numero: dadosEdicao.numero,
             complemento: dadosEdicao.complemento,
@@ -79,6 +84,7 @@ useEffect(() => {
             cep: dadosEdicao.cep,
             cns: dadosEdicao.cns,
             planoSaude: dadosEdicao.planoSaude,
+            usuariosId: dadosEdicao.usuarios.id,
         });
     }
 }, []);
@@ -89,7 +95,7 @@ useEffect(() => {
       [campo]: event.target.value,
     });
   };
-  
+
   const handleLimparCampos = () => {
     setDadosPaciente({nome: "", nomeCompleto: "", cpf: "", email: "", dataNascimento: "", logradouro: "", numero: "", complemento: "",
       bairro: "", cidade: "", uf: "", cep: "", cns: "", planoSaude: "", });
@@ -97,24 +103,20 @@ useEffect(() => {
 
   const onSubmit = () => {
     const newErrors = ValidaCampos(campos, dadosPaciente);
+    
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors); // Atualiza o estado de erros
       return; // Interrompe a execução
     }
 
-    setLoading(true);
     if (Object.keys(dadosEdicao).length == 0) {
+      setLoading(true);
       api.post("/Pacientes/insert", dadosPaciente)
         .then((result) => {
           if (result.status !== 200)
             throw new Error(result?.response?.data?.message);
 
-          showMessage(
-            "Sucesso",
-            "Paciente cadastrado com sucesso!",
-            "success",
-            null
-          );
+          showMessage("Sucesso", "Paciente cadastrado com sucesso!", "success", null);
           setLoading(false);
           handleLimparCampos();
         })
@@ -123,7 +125,34 @@ useEffect(() => {
           setLoading(false);
         });
     } else {
-      api.put("/Pacientes/update", dadosPaciente)
+      var objPaciente = dadosPaciente;
+      if (dadosEdicao.usuarios.perfil == "Paciente" && novaSenha === confirmarSenha) {
+        objPaciente = {
+          ...dadosPaciente,
+          usuarios: {
+            id: dadosEdicao.usuarios.id,
+            perfil: dadosEdicao.usuarios.perfil,
+            nome: dadosEdicao.usuarios.nome,
+            email: dadosEdicao.usuarios.email,
+            senha: novaSenha,
+            ativo: dadosEdicao.usuarios.ativo,
+            imagemPerfil: dadosEdicao.usuarios.imagemPerfil,
+            codigoCadastro: dadosEdicao.usuarios.codigoCadastro,
+          }
+        }
+      } else if (dadosEdicao.usuarios.perfil == "Paciente" && novaSenha != "" && confirmarSenha == "") {
+        setErrors({confirmarSenha: true})
+        return
+      } else if (dadosEdicao.usuarios.perfil == "Paciente" && novaSenha == "" && confirmarSenha != "") {  
+        setErrors({novaSenha: true})
+        return
+      } else if (dadosEdicao.usuarios.perfil == "Paciente" && novaSenha !== confirmarSenha) {
+        setErrors({novaSenha: true, confirmarSenha: true})
+        return
+      }
+
+      setLoading(true);
+      api.put("/Pacientes/update", objPaciente)
         .then((result) => {
           if (result.status !== 200)
             throw new Error(result?.response?.data?.message);
@@ -201,6 +230,7 @@ useEffect(() => {
               value={dadosPaciente?.cpf}
               onChange={(e) => handleDadosPacienteChange(e, "cpf")}
               isInvalid={!!errors.cpf}
+              disabled={dadosEdicao?.perfil == "Paciente"}
             />
           </Form.Group>
         </Col>
@@ -339,6 +369,38 @@ useEffect(() => {
           </Form.Group>
         </Col>
       </Row>
+      {getSessionCookie()?.perfil == "Paciente" &&
+        <Row>
+        <hr className="text-black d-none d-sm-block m-2" />
+        <span className="fw-bold mb-2">Senha de Acesso</span>
+        <Col md="4">
+            <Form.Group className="mb-3">
+              <Form.Label><span className="text-danger">*</span> Nova Senha</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Nova Senha"
+                autoComplete="off"
+                value={novaSenha}
+                onChange={(e) => setNovaSenha(e.target.value)}
+                isInvalid={!!errors.novaSenha}
+              />
+            </Form.Group>
+          </Col>
+          <Col md="4">
+            <Form.Group className="mb-3">
+              <Form.Label><span className="text-danger">*</span> Confirmar Senha</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Confirmar Senha"
+                autoComplete="off"
+                value={confirmarSenha}
+                onChange={(e) => setConfirmarSenha(e.target.value)}
+                isInvalid={!!errors.confirmarSenha}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
+      }
       <Row>
         <Col>
           <Button

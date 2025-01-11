@@ -226,8 +226,8 @@ export default function Usuarios() {
         </Form>
       )}
       {editarUsuario && (
-          <Form className="text-black mb-4 shadow p-3 mb-5 bg-white rounded">
-            <AddUsuarios handleReturn={handleReturn} dadosEdicao={dadosUsuariosEditar} />
+        <Form className="text-black mb-4 shadow p-3 mb-5 bg-white rounded">
+          <AddUsuarios handleReturn={handleReturn} dadosEdicao={dadosUsuariosEditar} />
         </Form>
       )}
     </Container>

@@ -323,8 +323,8 @@ export default function Pacientes() {
         </Form>
       )}
       {editarPaciente && (
-          <Form className="text-black mb-4 shadow p-3 mb-5 bg-white rounded">
-            <AddPacientes handleReturn={handleReturn} dadosEdicao={dadosPacientesEditar} />
+        <Form className="text-black mb-4 shadow p-3 mb-5 bg-white rounded">
+          <AddPacientes handleReturn={handleReturn} dadosEdicao={dadosPacientesEditar} />
         </Form>
       )}
     </Container>

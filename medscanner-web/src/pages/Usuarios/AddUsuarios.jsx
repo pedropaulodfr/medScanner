@@ -12,12 +12,11 @@ import Loading from "../../components/Loading/Loading";
 import { showMessage } from "../../helpers/message";
 import { ValidaCampos } from "../../helpers/validacoes";
 import { useApi } from "../../api/useApi";
+import { getSessionCookie } from "../../helpers/cookies";
 
 const AddUsuarios = ({ handleReturn, dadosEdicao = [] }) => {
   const api = useApi();
   const [dadosUsuario, setdadosUsuario] = useState([]);
-  const [listaMedicamentos, setListaMedicamentos] = useState([]);
-  const [listaTipos, setListaTipos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({
     identificacao: false,
@@ -44,6 +43,9 @@ const AddUsuarios = ({ handleReturn, dadosEdicao = [] }) => {
   // Status
   const listaStatus = ["Ativo", "Inativo"]
 
+  // Estado dos campos de senha
+  const [novaSenha, setNovaSenha] = useState("")
+  const [confirmarSenha, setConfirmarSenha] = useState("")
 
 useEffect(() => {
     if (Object.keys(dadosEdicao).length > 0) {
@@ -120,19 +122,14 @@ useEffect(() => {
       return; // Interrompe a execução
     }
 
-    setLoading(true);
     if (Object.keys(dadosEdicao).length == 0) {
+      setLoading(true);
       api.post("/Usuarios/insert", dadosUsuario)
         .then((result) => {
           if (result.status !== 200)
             throw new Error(result?.response?.data?.message);
 
-          showMessage(
-            "Sucesso",
-            "Usuário cadastrado com sucesso!",
-            "success",
-            null
-          );
+          showMessage("Sucesso", "Usuário cadastrado com sucesso!", "success", null);
           setLoading(false);
           handleLimparCampos();
         })
@@ -141,7 +138,25 @@ useEffect(() => {
           setLoading(false);
         });
     } else {
-      api.put("/Usuarios/update", dadosUsuario)
+      var objUsuario = dadosUsuario;
+      if (dadosEdicao.perfil == "Admin" && novaSenha === confirmarSenha) {
+        objUsuario = {
+          ...dadosUsuario,
+          senha: novaSenha
+        }
+      } else if (dadosEdicao.perfil == "Admin" && novaSenha != "" && confirmarSenha == "") {
+        setErrors({confirmarSenha: true})
+        return
+      } else if (dadosEdicao.perfil == "Admin" && novaSenha == "" && confirmarSenha != "") {  
+        setErrors({novaSenha: true})
+        return
+      } else if (dadosEdicao.perfil == "Admin" && novaSenha !== confirmarSenha) {
+        setErrors({novaSenha: true, confirmarSenha: true})
+        return
+      }
+      
+      setLoading(true);
+      api.put("/Usuarios/update", objUsuario)
         .then((result) => {
           if (result.status !== 200)
             throw new Error(result?.response?.data?.message);
@@ -259,6 +274,38 @@ useEffect(() => {
             </Form.Select>
           </Form.Group>
         </Col>
+        {getSessionCookie()?.perfil == "Admin" &&
+        <Row>
+        <hr className="text-black d-none d-sm-block m-2" />
+        <span className="fw-bold mb-2">Senha de Acesso</span>
+        <Col md="4">
+            <Form.Group className="mb-3">
+              <Form.Label><span className="text-danger">*</span> Nova Senha</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Nova Senha"
+                autoComplete="off"
+                value={novaSenha}
+                onChange={(e) => setNovaSenha(e.target.value)}
+                isInvalid={!!errors.novaSenha}
+              />
+            </Form.Group>
+          </Col>
+          <Col md="4">
+            <Form.Group className="mb-3">
+              <Form.Label><span className="text-danger">*</span> Confirmar Senha</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Confirmar Senha"
+                autoComplete="off"
+                value={confirmarSenha}
+                onChange={(e) => setConfirmarSenha(e.target.value)}
+                isInvalid={!!errors.confirmarSenha}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
+      }
       </Row>
       <Row>
         <Col>

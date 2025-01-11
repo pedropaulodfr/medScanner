@@ -114,9 +114,6 @@ export default function Dashboard() {
       setTextModal(_textModal);
   }
 
-  console.log("dadosMedicamentos", dadosMedicamentos);
-  
-
   return (
     <Container>
       {loading && <Loading />}
