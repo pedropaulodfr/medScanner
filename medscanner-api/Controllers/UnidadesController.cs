@@ -1,5 +1,6 @@
 using authentication_jwt.DTO;
 using authentication_jwt.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace authentication_jwt.Controllers
@@ -31,6 +32,7 @@ namespace authentication_jwt.Controllers
             }
         }
 
+        [Authorize(Policy = "AdminPolicy")]
         [HttpPost]
         [Route("insert")]
         public async Task<ActionResult> Insert([FromBody] UnidadeDTO model)
@@ -47,6 +49,7 @@ namespace authentication_jwt.Controllers
             }
         }
         
+        [Authorize(Policy = "AdminPolicy")]
         [HttpPut]
         [Route("update")]
         public async Task<ActionResult> Update([FromBody] UnidadeDTO model)
@@ -63,6 +66,7 @@ namespace authentication_jwt.Controllers
             }
         }
         
+        [Authorize(Policy = "AdminPolicy")]
         [HttpDelete]
         [Route("delete/{id}")]
         public async Task<ActionResult> Delete(long id)

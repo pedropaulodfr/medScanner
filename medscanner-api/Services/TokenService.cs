@@ -51,7 +51,7 @@ namespace authentication_jwt.Services
                 User user = new User{
                     Username = tokenUsername,
                     Role = tokenRole,
-                    Token = token
+                    Token = token,
                 };
 
                 return user;

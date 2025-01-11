@@ -82,6 +82,9 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(9)
                 .IsUnicode(false)
                 .HasColumnName("CEP");
+            entity.Property(e => e.Cidade)
+                .HasMaxLength(100)
+                .IsUnicode(false);
             entity.Property(e => e.Cns)
                 .HasMaxLength(15)
                 .IsUnicode(false)

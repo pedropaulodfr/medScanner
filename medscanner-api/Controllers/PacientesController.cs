@@ -7,23 +7,23 @@ namespace authentication_jwt.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UsuariosController : ControllerBase
+    public class PacientesController : ControllerBase
     {
-        private readonly UsuariosService _usuariosService;
+        private readonly PacientesService _pacientesService;
 
-        public UsuariosController(UsuariosService usuariosService)
+        public PacientesController(PacientesService pacientesService)
         {
-            _usuariosService = usuariosService;
+            _pacientesService = pacientesService;
         }
 
         [Authorize]
         [HttpGet]
-        [Route("get/{id}")]
-        public async Task<ActionResult> Get(long id)
+        [Route("get/{Id}")]
+        public async Task<ActionResult> Get(long Id)
         {
             try
             {
-                return StatusCode(200,  await _usuariosService.Get(id));
+                return StatusCode(200,  await _pacientesService.Get(Id));
             }
             catch (Exception ex)
             {
@@ -38,7 +38,7 @@ namespace authentication_jwt.Controllers
         {
             try
             {
-                return StatusCode(200, await _usuariosService.GetAll());
+                return StatusCode(200, await _pacientesService.GetAll());
             }
             catch (Exception ex)
             {
@@ -49,11 +49,11 @@ namespace authentication_jwt.Controllers
         [Authorize(Policy = "AdminPolicy")]
         [HttpPost]
         [Route("insert")]
-        public async Task<ActionResult> Insert([FromBody] UsuarioDTO model)
+        public async Task<ActionResult> Insert([FromBody] PacienteDTO model)
         {
             try
             {
-                return StatusCode(200, await _usuariosService.Insert(model));
+                return StatusCode(200, await _pacientesService.Insert(model));
             }
             catch (Exception ex)
             {
@@ -64,11 +64,11 @@ namespace authentication_jwt.Controllers
         [Authorize(Policy = "AdminPolicy")]
         [HttpPut]
         [Route("update")]
-        public async Task<ActionResult> Update([FromBody] UsuarioDTO model)
+        public async Task<ActionResult> Update([FromBody] PacienteDTO model)
         {
             try
             {
-                return StatusCode(200, await _usuariosService.Update(model));
+                return StatusCode(200, await _pacientesService.Update(model));
             }
             catch (Exception ex)
             {
@@ -81,7 +81,7 @@ namespace authentication_jwt.Controllers
         [Route("delete/{id}")]
         public async Task<ActionResult> Delete(long id)
         {
-            await _usuariosService.Delete(id);  // Chama o método no serviço
+            await _pacientesService.Delete(id);  // Chama o método no serviço
             try
             {
                 return Ok();

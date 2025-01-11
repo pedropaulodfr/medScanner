@@ -1,3 +1,4 @@
+using authentication_jwt.DTO;
 using authentication_jwt.Models;
 using authentication_jwt.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -36,7 +37,16 @@ namespace authentication_jwt.Controllers
                 user.Email = model.Email;
 
                 // Retorna os dados encapsulados em um ActionResult
-                return Ok(new { user, token });
+                UsuarioAutenticadoDTO usuarioAutenticado = new UsuarioAutenticadoDTO
+                {
+                    Usuario_Id = user.Id,
+                    Nome = user.Nome,
+                    Email = user.Email,
+                    Perfil = user.Perfil,
+                    Token = token
+                };
+                
+                return Ok(usuarioAutenticado);
             }
             catch (Exception ex)
             {

@@ -35,5 +35,9 @@ public partial class Paciente
 
     public long UsuariosId { get; set; }
 
+    public string? Cidade { get; set; }
+
+    public bool? Deletado { get; set; }
+
     public virtual Usuario Usuarios { get; set; } = null!;
 }

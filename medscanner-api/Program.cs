@@ -34,7 +34,7 @@ var key = Encoding.ASCII.GetBytes(authentication_jwt.Settings.Secret);
 
 builder.Services.AddAuthorization(x => 
 {
-    x.AddPolicy("PerfilPolicy", p => p.RequireAuthenticatedUser().RequireClaim("Perfil", "Admin"));
+    x.AddPolicy("AdminPolicy", p => p.RequireAuthenticatedUser().RequireClaim("Perfil", "Admin"));
 });
 
 builder.Services.AddAuthentication(x =>
@@ -65,6 +65,8 @@ builder.Services.AddScoped<MedicamentosService>();
 builder.Services.AddScoped<ReceituarioService>();
 builder.Services.AddScoped<CartaoControleService>();
 builder.Services.AddScoped<DashboardService>();
+builder.Services.AddScoped<CepService>();
+builder.Services.AddScoped<PacientesService>();
 builder.Services.AddScoped<UsuariosService>();
 
 var app = builder.Build();

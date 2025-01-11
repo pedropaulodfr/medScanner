@@ -18,7 +18,62 @@ namespace authentication_jwt.Services
             _dbContext = dbContext;
         }
 
-        // Método para retornar todos os tipos de medicamentos
+        public async Task<UsuarioDTO> Get(long id)
+        {
+            try
+            {
+                Usuario usuario = await _dbContext.Usuarios.Where(x => x.Id == id).AsNoTracking().FirstOrDefaultAsync();
+
+                PacienteDTO objPaciente = new PacienteDTO();
+                if(usuario.Perfil == "Paciente")
+                {
+                    var paciente = await _dbContext.Pacientes.Where(x => x.UsuariosId == usuario.Id && x.Deletado != true).FirstOrDefaultAsync();
+
+                    if (paciente == null)
+                        throw new ArgumentException("Paciente não localizado!");
+
+                    objPaciente = new PacienteDTO
+                    {
+                        Id = paciente.Id,
+                        Nome = paciente.Nome,
+                        NomeCompleto = paciente.NomeCompleto,
+                        Email = paciente.Email,
+                        Cpf = paciente.Cpf,
+                        DataNascimento = paciente.DataNascimento,
+                        Logradouro = paciente.Logradouro,
+                        Bairro = paciente.Bairro,
+                        Complemento = paciente.Complemento,
+                        Numero = paciente.Numero,
+                        Cidade = paciente.Cidade,
+                        Uf = paciente.Uf,
+                        Cep = paciente.Cep,
+                        Cns = paciente.Cns,
+                        PlanoSaude = paciente.PlanoSaude,
+                        UsuariosId = paciente.UsuariosId
+                    };
+                }
+
+                var retorno = new UsuarioDTO
+                {
+                    Id = usuario.Id,
+                    Perfil = usuario.Perfil,
+                    Nome = usuario.Nome,
+                    Email = usuario.Email,
+                    ImagemPerfil = usuario.ImagemPerfil,
+                    CodigoCadastro = usuario.CodigoCadastro,
+                    Ativo = usuario.Ativo ? "Ativo" : "Inativo",
+                    Paciente = objPaciente
+                };
+
+                return retorno;
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(ex.Message ?? ex.InnerException.ToString());
+            }
+            
+        }
+
         public async Task<List<UsuarioDTO>> GetAll()
         {
             List<Usuario> usuarios = await _dbContext.Usuarios.AsNoTracking().ToListAsync();
@@ -108,7 +163,7 @@ namespace authentication_jwt.Services
                 throw new Exception(ex.Message ?? ex.InnerException.ToString());
             }
         }
-        private string GerarSenhaAleatoria()
+        public string GerarSenhaAleatoria()
         {
             const string caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             var random = new Random();
