@@ -1,26 +1,27 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { useApi } from "../../api/useApi";
+import { getSessionCookie, setSessionCookie } from "../../helpers/cookies";
 
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    const storageData = localStorage.getItem("authToken");
+    const storageData = getSessionCookie()?.token;
     return !!storageData; // Definir isLoggedIn com base na presença do token no localStorage
   });
 
-  const [_user, set_User] = useState([])
-  
   const api = useApi();
 
   useEffect(() => {
     const validateToken = async () => {
-      const storageData = localStorage.getItem("authToken");
-      if (storageData) {
-        const data = await api.validateToken(storageData);
+      //const storageData = localStorage.getItem("authToken");
+      if (getSessionCookie()?.token) {
+        const data = await api.validateToken(getSessionCookie()?.token);
         if (data.user) {
           setIsLoggedIn(true);
+        } else {
+          logout()
         }
       }
     };
@@ -35,9 +36,9 @@ export const AuthProvider = ({ children }) => {
       .catch((error) => {
         return error;
       });
-      if (response.data?.user && response.data?.token) {
-        set_User(response.data.user);
-        setToken(response.data.token)
+      
+      if (response.data?.usuario_Id && response.data?.token) {
+        setToken(response.data)
         setIsLoggedIn(true)
         return { success: true, statusCode: response.status }
       }
@@ -48,16 +49,18 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     setToken("");
+    setSessionCookie(null)
     await api.logout();
     setIsLoggedIn(false);
   };
 
-  const setToken = (token) => {
-    localStorage.setItem('authToken', token);
+  const setToken = (data) => {
+    setSessionCookie(data)
+    //localStorage.setItem('authToken', data.token);
 };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout, _user }}>
+    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

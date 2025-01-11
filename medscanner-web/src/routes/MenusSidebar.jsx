@@ -6,6 +6,8 @@ import TipoMedicamento from "../pages/Parametros/TipoMedicamento/TipoMedicamento
 import Unidades from "../pages/Parametros/Unidades/Unidades";
 import Receituario from "../pages/Receituario/Receituario";
 import Usuarios from "../pages/Usuarios/Usuarios";
+import MeuPerfil from "../pages/MeuPerfil";
+import Pacientes from "../pages/Pacientes/Pacientes";
 
 var menus = [
   {
@@ -13,41 +15,56 @@ var menus = [
     name: "Home",
     icon: "bi bi-house",
     component: Home,
+    sidebar: true
   },
   {
     path: "/dashboard",
     name: "Dashboard",
     icon: "bi bi-ui-checks-grid",
     component: Dashboard,
+    sidebar: true
   },
   {
     path: "/card",
     name: "Cartão de Controle",
     icon: "bi bi-table",
     component: CartaoControle,
+    sidebar: true
   },
   {
     path: "/receituario",
     name: "Receituário",
     icon: "bi bi-card-list",
     component: Receituario,
+    sidebar: true
   },
   {
     path: "/medicamentos",
     name: "Medicamentos",
     icon: "bi bi-capsule",
     component: Medicamentos,
+    sidebar: true
   },
   {
     path: "/home",
     name: "Relatórios",
-    icon: "bi bi-file-earmark",
+    icon: "bi bi-clipboard2-pulse",
     component: CartaoControle,
+    sidebar: true
+  },
+  {
+    path: "/pacientes",
+    name: "Pacientes",
+    icon: "bi bi-person-lines-fill",
+    modulo: ["Admin"],
+    component: Pacientes,
+    sidebar: true
   },
   {
     name: "Parâmetros",
     icon: "bi bi-gear",
     modulo: ["Admin"],
+    sidebar: true,
     submenus: [
       {
         path: "/unidades",
@@ -55,6 +72,7 @@ var menus = [
         icon: "bi bi-rulers",
         modulo: ["Admin"],
         component: Unidades,
+        sidebar: true
       },
       {
         path: "/tipoMedicamento",
@@ -62,6 +80,7 @@ var menus = [
         icon: "bi bi-capsule",
         modulo: ["Admin"],
         component: TipoMedicamento,
+        sidebar: true
       },
     ]
   },
@@ -71,6 +90,14 @@ var menus = [
     icon: "bi bi-people",
     modulo: ["Admin"],
     component: Usuarios,
+    sidebar: true
+  },
+  {
+    path: "/meu-perfil",
+    name: "Meu Perfil",
+    icon: "bi bi-people",
+    component: MeuPerfil,
+    sidebar: false
   },
 ];
 

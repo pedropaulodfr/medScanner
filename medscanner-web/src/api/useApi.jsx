@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getSessionCookie } from '../helpers/cookies';
 
 const api = axios.create({
     baseURL: process.env.REACT_APP_API
@@ -6,10 +7,14 @@ const api = axios.create({
 
 export const useApi = () => ({
     validateToken: async (token) => {
-        const response = await api.post('/validate', { token });
-        return {
-            user: {username : response.data.username, email: response.data.email}
-        };
+        try {
+            const response = await api.post('/validate', { token });
+            return {
+                user: {username : response.data.username, email: response.data.email}
+            };
+        } catch (error) {
+            return error
+        }
     },
     signin: async (email, senha) => {
         try {
@@ -33,10 +38,9 @@ export const useApi = () => ({
     },
     get: async (path) => {
         try {
-            const token =  localStorage.getItem("authToken");
             const response = await api.get(path, {
                 headers: {
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${getSessionCookie()?.token}`
                 }
             });
             return response;
@@ -46,10 +50,9 @@ export const useApi = () => ({
     },
     post: async (path, data) => {
         try {
-            const token =  localStorage.getItem("authToken");
             const response = await api.post(path, data, {
                 headers: {
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${getSessionCookie()?.token}`
                 }
             })
             .then((result) => {
@@ -66,10 +69,9 @@ export const useApi = () => ({
     },
     delete: async (path, id) => {
         try {
-            const token =  localStorage.getItem("authToken");
             const response = await api.delete(`${path}/${id}`, {
                 headers: {
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${getSessionCookie()?.token}`
                 }
             })
             .then((result) => {
@@ -86,10 +88,9 @@ export const useApi = () => ({
     },
     put: async (path, data) => {
         try {
-            const token =  localStorage.getItem("authToken");
             const response = await api.put(path, data, {
                 headers: {
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${getSessionCookie()?.token}`
                 }
             })
             .then((result) => {
