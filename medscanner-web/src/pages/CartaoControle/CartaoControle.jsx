@@ -14,6 +14,7 @@ import Loading from "../../components/Loading/Loading";
 import { showMessage, showQuestion } from "../../helpers/message";
 import { useApi } from "../../api/useApi";
 import AddCartaoControle from "./AddCartaoControle.jsx";
+import { getSessionCookie } from "../../helpers/cookies.js";
 
 export default function CartaoControle() {
   const api = useApi();
@@ -90,7 +91,7 @@ export default function CartaoControle() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        api.get("/CartaoControle/getAll").then((result) => {
+        api.get(`/CartaoControle/get/${getSessionCookie()?.paciente_Id}`).then((result) => {
           result?.data?.map(m => {
             m.data = moment(m.data).format("DD/MM/YYYY")
             m.dataRetorno = moment(m.dataRetorno).format("DD/MM/YYYY")

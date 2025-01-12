@@ -19,6 +19,7 @@ import Cards from "../components/Cards/Cards";
 import Modals from "../components/Modals/Modals";
 import TabelaListagem from "../components/TabelaListagem/TabelaListagem";
 import { useApi } from "../api/useApi";
+import { getSessionCookie } from "../helpers/cookies";
 
 export default function Dashboard() {
   const api = useApi();
@@ -49,8 +50,8 @@ export default function Dashboard() {
           setLoading(false);
         });
         
-        api.get("/Dashboard/proximoRetorno").then((result) => {
-          result.data.map(m => {
+        api.get(`/Dashboard/proximoRetorno/${getSessionCookie()?.paciente_Id}`).then((result) => {
+          result?.data?.map(m => {
             m.dataRetornoFormatada = moment(m.dataRetorno).format("DD/MM/YYYY")
           })
           
@@ -58,7 +59,7 @@ export default function Dashboard() {
           setLoading(false);
         });
         
-        api.get("/Dashboard/estoqueMedicamentos").then((result) => {
+        api.get(`/Dashboard/estoqueMedicamentos/${getSessionCookie()?.paciente_Id}`).then((result) => {
           setdadosEstoqueMedicamentos(result.data);
           setLoading(false);
         });
@@ -78,13 +79,13 @@ export default function Dashboard() {
 
   // Data de retorno dos medicamentos
   const data = []
-  dadosProximoAoRetorno.forEach((dr) => {
+  dadosProximoAoRetorno?.forEach((dr) => {
     const date = moment(dr.dataRetorno).format("YYYY, MM, DD")
     data.push([new Date(date), dr.quantidade]);
   });
 
   const dataQuantidades = [["Medicamento", "Quantidade", { role: "style" }]];
-  dadosEstoqueMedicamentos.forEach((x, index) => {
+  dadosEstoqueMedicamentos?.forEach((x, index) => {
     const style = index % 2 === 0 ? "#4374E0" : "#00C6FF";
     dataQuantidades.push([x.medicamento, x.quantidade, style])
   })

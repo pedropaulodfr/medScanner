@@ -13,6 +13,7 @@ import Loading from "../../components/Loading/Loading";
 import { showMessage } from "../../helpers/message";
 import { ValidaCampos } from "../../helpers/validacoes";
 import { useApi } from "../../api/useApi";
+import { getSessionCookie } from "../../helpers/cookies";
 
 const AddCartaoControle = ({ handleReturn, dadosEdicao = [] }) => {
   const api = useApi();
@@ -76,6 +77,7 @@ const AddCartaoControle = ({ handleReturn, dadosEdicao = [] }) => {
         dataRetorno: moment(dadosEdicao.dataRetorno, 'DD/MM/YYYY').format("YYYY-MM-DD"),
         quantidade: dadosEdicao.quantidade,
         profissional: dadosEdicao.profissional,
+        usuarioId: getSessionCookie()?.usuario_Id
       });
     }
   }, []);
@@ -136,20 +138,19 @@ const AddCartaoControle = ({ handleReturn, dadosEdicao = [] }) => {
       return; // Interrompe a execução
     }
 
-    setLoading(true);
+    const _dadosCartaoControle = {
+      ...dadosCartaoControle,
+      usuarioId: getSessionCookie()?.usuario_Id
+    }
+
     if (Object.keys(dadosEdicao).length == 0) {
-      api
-        .post("/CartaoControle/insert", dadosCartaoControle)
+      setLoading(true);
+      api.post("/CartaoControle/insert", _dadosCartaoControle)
         .then((result) => {
           if (result.status !== 200)
-            throw new Error("Houve um erro ao tentar cadastrar o registro!");
+            throw new Error(result?.response?.data?.message);
 
-          showMessage(
-            "Sucesso",
-            "Registro cadastrado com sucesso!",
-            "success",
-            null
-          );
+          showMessage("Sucesso", "Registro cadastrado com sucesso!", "success", null);
           setLoading(false);
           handleLimparCampos();
         })
@@ -158,20 +159,14 @@ const AddCartaoControle = ({ handleReturn, dadosEdicao = [] }) => {
           setLoading(false);
         });
     } else {
-      api
-        .put("/CartaoControle/update", dadosCartaoControle)
+      setLoading(true);
+      api.put("/CartaoControle/update", _dadosCartaoControle)
         .then((result) => {
           if (result.status !== 200)
-            throw new Error("Houve um erro ao tentar editar o registro!");
+            throw new Error(result?.response?.data?.message);
 
-          showMessage(
-            "Sucesso",
-            "Registro editado com sucesso!",
-            "success",
-            () => {
-              handleReturn();
-            }
-          );
+          showMessage("Sucesso", "Registro editado com sucesso!", "success", () => {handleReturn()});
+
           setLoading(false);
           handleLimparCampos();
         })

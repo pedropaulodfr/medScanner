@@ -20,6 +20,7 @@ var menus = [
   {
     path: "/dashboard",
     name: "Dashboard",
+    modulo: ["Paciente"],
     icon: "bi bi-ui-checks-grid",
     component: Dashboard,
     sidebar: true
@@ -28,6 +29,7 @@ var menus = [
     path: "/card",
     name: "Cartão de Controle",
     icon: "bi bi-table",
+    modulo: ["Paciente"],
     component: CartaoControle,
     sidebar: true
   },
@@ -35,6 +37,7 @@ var menus = [
     path: "/receituario",
     name: "Receituário",
     icon: "bi bi-card-list",
+    modulo: ["Paciente"],
     component: Receituario,
     sidebar: true
   },
@@ -42,6 +45,7 @@ var menus = [
     path: "/medicamentos",
     name: "Medicamentos",
     icon: "bi bi-capsule",
+    modulo: ["Admin"],
     component: Medicamentos,
     sidebar: true
   },

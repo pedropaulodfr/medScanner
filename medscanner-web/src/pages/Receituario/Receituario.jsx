@@ -13,6 +13,7 @@ import Loading from "../../components/Loading/Loading";
 import { showMessage, showQuestion } from "../../helpers/message";
 import { useApi } from "../../api/useApi";
 import AddReceituarios from "./AddReceituario";
+import { getSessionCookie } from "../../helpers/cookies";
 
 export default function Receituario() {
   const api = useApi();
@@ -72,7 +73,7 @@ export default function Receituario() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        await api.get("/Receituario/getAll").then((result) => {
+        await api.get(`/Receituario/get/${getSessionCookie()?.paciente_Id}`).then((result) => {
           result.data.map(m => {
             m.medicamentoFormatado = `${m.medicamento.identificacao} ${m.medicamento.concentracao} ${m.medicamento.unidade}`;
             m.doseFormatada = `${m.dose} ${m.medicamento.tipoMedicamento}`;

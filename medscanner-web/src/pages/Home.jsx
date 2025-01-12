@@ -5,6 +5,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
+import { getSessionCookie } from "../helpers/cookies";
 
 export default function Home() {
   const handleCard = (route) => {
@@ -51,16 +52,30 @@ export default function Home() {
           <h4 style={{ color: "#00C7E9" }}>O que deseja fazer?</h4>
         </Col>
       </Row>
-      <Row className="justify-content-md-center">
-        <Col md="auto">
-          <Button variant="outline-success" className="m-2 mt-0.5" onClick={() => {handleCard("dashboard")}}>
-            Dashboard
-          </Button>
-          <Button variant="outline-info" className="m-2 mt-0.5" onClick={() => {handleCard("card")}}>
-            Verificar Cartão
-          </Button>
-        </Col>
-      </Row>
+      {getSessionCookie()?.perfil != "Admin" &&
+        <Row className="justify-content-md-center">
+          <Col md="auto">
+            <Button variant="outline-success" className="m-2 mt-0.5" onClick={() => {handleCard("dashboard")}}>
+              Dashboard
+            </Button>
+            <Button variant="outline-info" className="m-2 mt-0.5" onClick={() => {handleCard("card")}}>
+              Verificar Cartão
+            </Button>
+          </Col>
+        </Row>
+      }
+      {getSessionCookie()?.perfil == "Admin" &&
+        <Row className="justify-content-md-center">
+          <Col md="auto">
+            <Button variant="outline-success" className="m-2 mt-0.5" onClick={() => {handleCard("pacientes")}}>
+              Pacientes
+            </Button>
+            <Button variant="outline-info" className="m-2 mt-0.5" onClick={() => {handleCard("usuarios")}}>
+              Usuários
+            </Button>
+          </Col>
+        </Row>
+      }
     </Container>
   );
 }

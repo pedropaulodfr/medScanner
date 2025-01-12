@@ -12,6 +12,7 @@ import Loading from "../../components/Loading/Loading";
 import { showMessage } from "../../helpers/message";
 import { ValidaCampos } from "../../helpers/validacoes";
 import { useApi } from "../../api/useApi";
+import { getSessionCookie } from "../../helpers/cookies";
 
 const AddReceituarios = ({ handleReturn, dadosEdicao = [] }) => {
   const api = useApi();
@@ -82,6 +83,7 @@ const AddReceituarios = ({ handleReturn, dadosEdicao = [] }) => {
         tempo: dadosEdicao.tempo,
         periodo: dadosEdicao.periodo,
         dose: dadosEdicao.dose,
+        usuarioId: getSessionCookie()?.usuario_Id,
         medicamento: {
           id: dadosEdicao.medicamento.id,
           tipoMedicamentoId: dadosEdicao.medicamento.tipoMedicamentoId,
@@ -160,13 +162,18 @@ const AddReceituarios = ({ handleReturn, dadosEdicao = [] }) => {
       return; // Interrompe a execução
     }
 
-    setLoading(true);
+    const _dadosReceituario = {
+      ...dadosReceituario,
+      usuarioId: getSessionCookie()?.usuario_Id
+    }
+
     if (Object.keys(dadosEdicao).length == 0) {
-      api.post("/Receituario/insert", dadosReceituario)
-        .then((result) => {
+      setLoading(true);
+      api.post("/Receituario/insert", _dadosReceituario)
+      .then((result) => {
           if (result.status !== 200)
             throw new Error("Houve um erro ao tentar cadastrar o receituário!");
-
+          
           showMessage(
             "Sucesso",
             "Receituário cadastrado com sucesso!",
@@ -181,7 +188,8 @@ const AddReceituarios = ({ handleReturn, dadosEdicao = [] }) => {
           setLoading(false);
         });
     } else {
-      api.put("/Receituario/update", dadosReceituario)
+      setLoading(true);
+      api.put("/Receituario/update", _dadosReceituario)
         .then((result) => {
           if (result.status !== 200)
             throw new Error("Houve um erro ao tentar editar o receituário!");
