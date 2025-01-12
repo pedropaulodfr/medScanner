@@ -22,5 +22,7 @@ namespace authentication_jwt.DTO
         public DateTime? DataRetorno { get; set; }
 
         public string? Profissional { get; set; }
+        public long? PacienteId { get; set; }
+        public long? UsuarioId { get; set; }
     }
 }

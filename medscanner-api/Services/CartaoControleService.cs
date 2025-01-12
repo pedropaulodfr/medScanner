@@ -18,6 +18,33 @@ namespace authentication_jwt.Services
             _dbContext = dbContext;
         }
 
+        public async Task<List<CartaoControleDTO>> Get(long PacienteId)
+        {
+            var cartaoControle = await _dbContext.CartaoControles
+                                        .Include(x => x.Medicamento)
+                                            .ThenInclude(y => y.Unidade)
+                                        .Include(x => x.Medicamento)
+                                            .ThenInclude(z => z.TipoMedicamento)
+                                        .Where(x => x.PacienteId == PacienteId)
+                                        .AsNoTracking().ToListAsync();
+
+            List<CartaoControleDTO> retorno = cartaoControle.Select(m => new CartaoControleDTO
+            {
+                Id = m.Id,
+                MedicamentoId = m.MedicamentoId,
+                Medicamento = m.Medicamento.Identificacao,
+                Concentracao = m.Medicamento.Concentracao,
+                Unidade = m.Medicamento.Unidade.Identificacao,
+                Quantidade = m.Quantidade,
+                Tipo = m.Medicamento.TipoMedicamento.Identificacao,
+                Data = m.Data,
+                DataRetorno = m.DataRetorno,
+                Profissional = m.Profissional
+            })
+            .OrderBy(x => x.Data).ToList();
+
+            return retorno;
+        }
         public async Task<List<CartaoControleDTO>> GetAll()
         {
             var cartaoControle = await _dbContext.CartaoControles
@@ -49,13 +76,18 @@ namespace authentication_jwt.Services
         {
             try
             {
+                var paciente = await _dbContext.Pacientes.Where(x => x.UsuariosId == model.UsuarioId).FirstOrDefaultAsync();
+                if (paciente == null)
+                    throw new Exception("Paciente não encontrado!");
+
                 CartaoControle registro = new CartaoControle()
                 {
                     MedicamentoId = model.MedicamentoId,
                     Quantidade = model.Quantidade,
                     Data = model.Data,
                     DataRetorno = model.DataRetorno,
-                    Profissional = model.Profissional
+                    Profissional = model.Profissional,
+                    PacienteId = paciente.Id
                 };
 
                 await _dbContext.AddAsync(registro);
@@ -75,7 +107,7 @@ namespace authentication_jwt.Services
             {
                 var existRegistro = await _dbContext.CartaoControles.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
                 if (existRegistro == null)
-                    throw new Exception("Erro ao atualizar, o registro não existe!");
+                    throw new Exception("O registro não existe!");
                 
                 existRegistro.MedicamentoId = model.MedicamentoId;
                 existRegistro.Quantidade = model.Quantidade;

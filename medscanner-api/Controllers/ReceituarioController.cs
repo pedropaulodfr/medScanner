@@ -16,14 +16,26 @@ namespace authentication_jwt.Controllers
         }
 
         [HttpGet]
+        [Route("get/{PacienteId}")]
+        public async Task<ActionResult> Get(long PacienteId)
+        {
+            try
+            {
+                return StatusCode(200, await _receituarioService.Get(PacienteId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensagem = "Erro ao obter dados: " + ex });
+            }
+        }
+
+        [HttpGet]
         [Route("getAll")]
         public async Task<ActionResult> GetAll()
         {
-            var result = await _receituarioService.GetAll();  // Chama o método no serviço
-
             try
             {
-                return Ok(result);
+                return StatusCode(200, await _receituarioService.GetAll());
             }
             catch (Exception ex)
             {
@@ -35,11 +47,9 @@ namespace authentication_jwt.Controllers
         [Route("insert")]
         public async Task<ActionResult> Insert([FromBody] ReceituarioDTO model)
         {
-            var result = await _receituarioService.Insert(model);  // Chama o método no serviço
-
             try
             {
-                return Ok(result);
+                return StatusCode(200, await _receituarioService.Insert(model));
             }
             catch (Exception ex)
             {
@@ -51,11 +61,9 @@ namespace authentication_jwt.Controllers
         [Route("update")]
         public async Task<ActionResult> Update([FromBody] ReceituarioDTO model)
         {
-            var result = await _receituarioService.Update(model);  // Chama o método no serviço
-
             try
             {
-                return Ok(result);
+                return StatusCode(200, await _receituarioService.Update(model));
             }
             catch (Exception ex)
             {
@@ -70,7 +78,7 @@ namespace authentication_jwt.Controllers
             await _receituarioService.Delete(id);  // Chama o método no serviço
             try
             {
-                return Ok(new { mensagem = "Receituário deletado com sucesso!" });
+                return Ok();
             }
             catch (Exception ex)
             {

@@ -33,13 +33,12 @@ public partial class AppDbContext : DbContext
     {
         modelBuilder.Entity<CartaoControle>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK_Receituario");
-
             entity.ToTable("CartaoControle");
 
             entity.Property(e => e.Data).HasColumnType("date");
             entity.Property(e => e.DataRetorno).HasColumnType("date");
             entity.Property(e => e.MedicamentoId).HasColumnName("Medicamento_Id");
+            entity.Property(e => e.PacienteId).HasColumnName("Paciente_Id");
             entity.Property(e => e.Profissional)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -48,6 +47,11 @@ public partial class AppDbContext : DbContext
                 .HasForeignKey(d => d.MedicamentoId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_CartaoControle_Medicamentos");
+
+            entity.HasOne(d => d.Paciente).WithMany(p => p.CartaoControles)
+                .HasForeignKey(d => d.PacienteId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CartaoControle_Pacientes");
         });
 
         modelBuilder.Entity<Medicamento>(entity =>
@@ -129,11 +133,10 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Receituario>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK_Receituario_1");
-
             entity.ToTable("Receituario");
 
             entity.Property(e => e.MedicamentoId).HasColumnName("Medicamento_Id");
+            entity.Property(e => e.PacienteId).HasColumnName("Paciente_Id");
             entity.Property(e => e.Periodo)
                 .HasMaxLength(5)
                 .IsUnicode(false)
@@ -143,10 +146,15 @@ public partial class AppDbContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.TipoMedicamentoId).HasColumnName("TipoMedicamento_Id");
 
+            entity.HasOne(d => d.Medicamento).WithMany(p => p.Receituarios)
+                .HasForeignKey(d => d.MedicamentoId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Receituario_Medicamentos");
+
             entity.HasOne(d => d.TipoMedicamento).WithMany(p => p.Receituarios)
                 .HasForeignKey(d => d.TipoMedicamentoId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Receituario_Medicamentos");
+                .HasConstraintName("FK_Receituario_TipoMedicamento");
         });
 
         modelBuilder.Entity<TipoMedicamento>(entity =>

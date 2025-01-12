@@ -36,6 +36,14 @@ namespace authentication_jwt.Controllers
                 user.Senha = "";
                 user.Email = model.Email;
 
+                long paciente_Id = 0;
+                if (user.Perfil == "Paciente")
+                {
+                    var paciente = await _dbContext.Pacientes.Where(x => x.UsuariosId == user.Id).AsNoTracking().FirstOrDefaultAsync();
+                    if (paciente != null)
+                        paciente_Id = paciente.Id;
+                }
+
                 // Retorna os dados encapsulados em um ActionResult
                 UsuarioAutenticadoDTO usuarioAutenticado = new UsuarioAutenticadoDTO
                 {
@@ -43,7 +51,8 @@ namespace authentication_jwt.Controllers
                     Nome = user.Nome,
                     Email = user.Email,
                     Perfil = user.Perfil,
-                    Token = token
+                    Token = token,
+                    Paciente_Id = paciente_Id
                 };
                 
                 return Ok(usuarioAutenticado);

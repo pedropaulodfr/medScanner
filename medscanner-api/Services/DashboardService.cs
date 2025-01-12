@@ -14,9 +14,9 @@ namespace authentication_jwt.Services
             _dbContext = dbContext;
         }
 
-        public async Task<List<CartaoControleDashboardDTO>> CartaoControle()
+        public async Task<List<CartaoControleDashboardDTO>> CartaoControle(long PacienteId)
         {
-            var dados = await _dbContext.CartaoControles.AsNoTracking().ToListAsync();
+            var dados = await _dbContext.CartaoControles.Where(x => x.PacienteId == PacienteId).AsNoTracking().ToListAsync();
 
             var retorno = dados.GroupBy(x => x.DataRetorno ).Select(y => new CartaoControleDashboardDTO
             {
@@ -27,13 +27,14 @@ namespace authentication_jwt.Services
             return retorno;
         }
 
-        public async Task<List<CardsDashboardDTO>> CardProximoRetorno()
+        public async Task<List<CardsDashboardDTO>> CardProximoRetorno(long PacienteId)
         {
             var dados = await _dbContext.CartaoControles
                                             .Include(x => x.Medicamento)
                                                 .ThenInclude(y => y.Unidade)
                                             .AsNoTracking()
-                                            .Where(x => x.DataRetorno >= DateTime.Now && x.DataRetorno <= DateTime.Now.AddDays(30))
+                                            .Where(x => x.DataRetorno >= DateTime.Now && x.DataRetorno <= DateTime.Now.AddDays(30)
+                                                    && x.PacienteId == PacienteId)
                                             .ToListAsync();
 
             var proximosAoRetorno = dados.Select(y => new CardsDashboardDTO
@@ -47,11 +48,12 @@ namespace authentication_jwt.Services
             return proximosAoRetorno;
         }
 
-        public async Task<List<EstoqueMedicamentosDashboardDTO>> EstoqueMedicamentos()
+        public async Task<List<EstoqueMedicamentosDashboardDTO>> EstoqueMedicamentos(long PacienteId)
         {
             var dados = await _dbContext.CartaoControles
                                         .Include(x => x.Medicamento)
                                             .ThenInclude(y => y.Unidade)
+                                        .Where(x => x.PacienteId == PacienteId)
                                         .AsNoTracking().ToListAsync();
 
             /* CC = Cartão de Controle | R = Receituário

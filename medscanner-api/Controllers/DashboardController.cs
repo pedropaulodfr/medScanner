@@ -17,10 +17,10 @@ namespace authentication_jwt.Controllers
         }
 
         [HttpGet]
-        [Route("cartaoControle")]
-        public async Task<ActionResult> CartaoControle()
+        [Route("cartaoControle/{PacienteId}")]
+        public async Task<ActionResult> CartaoControle(long PacienteId)
         {
-            var result = await _dashboardService.CartaoControle();  // Chama o método no serviço
+            var result = await _dashboardService.CartaoControle(PacienteId);  // Chama o método no serviço
 
             try
             {
@@ -33,10 +33,10 @@ namespace authentication_jwt.Controllers
         }
         
         [HttpGet]
-        [Route("proximoRetorno")]
-        public async Task<ActionResult> CardProximoAoRetorno()
+        [Route("proximoRetorno/{PacienteId}")]
+        public async Task<ActionResult> CardProximoAoRetorno(long PacienteId)
         {
-            var result = await _dashboardService.CardProximoRetorno();  // Chama o método no serviço
+            var result = await _dashboardService.CardProximoRetorno(PacienteId);  // Chama o método no serviço
 
             try
             {
@@ -49,10 +49,10 @@ namespace authentication_jwt.Controllers
         }
         
         [HttpGet]
-        [Route("estoqueMedicamentos")]
-        public async Task<ActionResult> EstoqueMedicamentos()
+        [Route("estoqueMedicamentos/{PacienteId}")]
+        public async Task<ActionResult> EstoqueMedicamentos(long PacienteId)
         {
-            var result = await _dashboardService.EstoqueMedicamentos();  // Chama o método no serviço
+            var result = await _dashboardService.EstoqueMedicamentos(PacienteId);  // Chama o método no serviço
 
             try
             {

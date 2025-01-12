@@ -1,5 +1,6 @@
 using authentication_jwt.DTO;
 using authentication_jwt.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace authentication_jwt.Controllers
@@ -14,6 +15,23 @@ namespace authentication_jwt.Controllers
             _cartaoControleService = cartaoControleService;
         }
 
+        [HttpGet]
+        [Route("get/{PacienteId}")]
+        public async Task<ActionResult> Get(long PacienteId)
+        {
+            var result = await _cartaoControleService.Get(PacienteId);  // Chama o método no serviço
+
+            try
+            {
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensagem = "Erro ao salvar: " + ex });
+            }
+        }
+
+        [Authorize(Policy = "AdminPolicy")]
         [HttpGet]
         [Route("getAll")]
         public async Task<ActionResult> GetAll()

@@ -22,5 +22,9 @@ public partial class Receituario
 
     public long TipoMedicamentoId { get; set; }
 
+    public long PacienteId { get; set; }
+
+    public virtual Medicamento Medicamento { get; set; } = null!;
+
     public virtual TipoMedicamento TipoMedicamento { get; set; } = null!;
 }

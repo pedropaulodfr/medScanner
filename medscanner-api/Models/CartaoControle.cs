@@ -17,5 +17,9 @@ public partial class CartaoControle
 
     public string? Profissional { get; set; }
 
+    public long PacienteId { get; set; }
+
     public virtual Medicamento Medicamento { get; set; } = null!;
+
+    public virtual Paciente Paciente { get; set; } = null!;
 }
