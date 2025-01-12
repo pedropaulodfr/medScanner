@@ -30,6 +30,7 @@ export default function Medicamentos() {
     { value: "Concentração", objectValue: "concentracaoUnidade" },
     { value: "Descrição", objectValue: "descricao" },
     { value: "Tipo", objectValue: "tipoMedicamento" },
+    { value: "Status", objectValue: "status" },
   ];
 
   const handleDelete = (item) => {

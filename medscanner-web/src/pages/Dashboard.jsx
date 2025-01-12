@@ -38,7 +38,7 @@ export default function Dashboard() {
   
   // Headers Medicamentos Cadastrados
   const headersMedicamentos = [
-    { value: "Medicamentos", objectValue: "identificacao" },
+    { value: "Medicamentos", objectValue: "identificacaoFormatada" },
   ]
 
   useEffect(() => {
@@ -65,6 +65,9 @@ export default function Dashboard() {
         });
         
         api.get("/Medicamentos/getAll").then((result) => {
+          result.data.map(m => {
+            m.identificacaoFormatada = `${m.identificacao} ${m.concentracao} ${m.unidade}`;
+          })
           setDadosMedicamentos(result.data);
           setLoading(false);
         });

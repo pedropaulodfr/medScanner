@@ -4,7 +4,7 @@ export const ValidaCampos = (campos, dados) => {
   // Itera sobre os campos e realiza a validação
   campos.forEach(({ nome, type }) => {
     const valor = dados[nome];
-
+    
     // Se o tipo for 'text', não considera '0' como inválido
     if (type === "text" && (valor === "" || valor === undefined)) {
       newErrors[nome] = true; // Marca o campo como erro

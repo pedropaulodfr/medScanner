@@ -267,7 +267,7 @@ useEffect(() => {
               onChange={(e) => handleStatusChange(e)}
               isInvalid={!!errors.ativo}
               >
-              <option value={0}>Selecione</option>
+              <option value={""}>Selecione</option>
               {listaStatus?.map((m, index) => (
                 <option key={index} value={m}>{m}</option>
               ))}

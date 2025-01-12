@@ -19,36 +19,22 @@ const AddMedicamentos = ({ handleReturn, dadosEdicao = [] }) => {
   const [unidades, setUnidades] = useState([]);
   const [_dadosMedicamentos, set_DadosMedicamentos] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({
-    identificacao: false,
-    concentracao: false,
-    unidade: false,
-    tipo: false,
-  });
-
-  // Estado dos campos
-  const [medicamento, setMedicamento] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [concentracao, setConcentracao] = useState();
-  const [tipoMedicamentoId, setTipoMedicamentoId] = useState(0);
-  const [unidadeId, setUnidadeId] = useState(0);
+  const [errors, setErrors] = useState({});
 
   // Campos a serem validados
   const campos = [
     { nome: "identificacao", type: "text" },
     { nome: "unidadeId", type: "number" },
-    { nome: "concentracao", type: "text" },
+    { nome: "concentracao", type: `${_dadosMedicamentos?.associacao ? "text" : "number"}` },
     { nome: "tipoMedicamentoId", type: "number" },
+    { nome: "status", type: "text" },
   ];
+
+  // Status
+  const listaStatus = ["Ativo", "Inativo"]
 
   useEffect(() => {
     if (Object.keys(dadosEdicao).length > 0) {
-      setMedicamento(dadosEdicao.identificacao)
-      setConcentracao(dadosEdicao.concentracao)
-      setDescricao(dadosEdicao.descricao)
-      setTipoMedicamentoId(dadosEdicao.tipoMedicamentoId)
-      setUnidadeId(dadosEdicao.unidadeId)
-
       set_DadosMedicamentos({
         ..._dadosMedicamentos,
         id: dadosEdicao.id,
@@ -56,48 +42,17 @@ const AddMedicamentos = ({ handleReturn, dadosEdicao = [] }) => {
         descricao: dadosEdicao.descricao,
         unidadeId: dadosEdicao.unidadeId,
         concentracao: dadosEdicao.concentracao,
-        tipoMedicamentoId: dadosEdicao.tipoMedicamentoId
+        tipoMedicamentoId: dadosEdicao.tipoMedicamentoId,
+        associacao: dadosEdicao.associacao,
+        status: dadosEdicao.status
       })
     }
   }, []);
 
-  const handleMedicamentoChange = (event) => {
-    setMedicamento(event.target.value);
+  const handleDadosMedicamentoChange = (event, campo) => {
     set_DadosMedicamentos({
       ..._dadosMedicamentos,
-      identificacao: event.target.value,
-    });
-  };
-
-  const handleDescricaoChange = (event) => {
-    setDescricao(event.target.value);
-    set_DadosMedicamentos({
-      ..._dadosMedicamentos,
-      descricao: event.target.value,
-    });
-  };
-
-  const handleTipoChange = (event) => {
-    setTipoMedicamentoId(event.target.value);
-    set_DadosMedicamentos({
-      ..._dadosMedicamentos,
-      tipoMedicamentoId: event.target.value,
-    });
-  };
-
-  const handleConcentracaoChange = (event) => {
-    setConcentracao(event.target.value)
-    set_DadosMedicamentos({
-      ..._dadosMedicamentos,
-      concentracao: event.target.value,
-    });
-  };
-
-  const handleUnidadeChange = (event) => {
-    setUnidadeId(event.target.value);
-    set_DadosMedicamentos({
-      ..._dadosMedicamentos,
-      unidadeId: event.target.value,
+      [campo]: event.target.type != "checkbox" ? event.target.value : event.target.checked,
     });
   };
 
@@ -125,12 +80,7 @@ const AddMedicamentos = ({ handleReturn, dadosEdicao = [] }) => {
   }, []);
 
   const handleLimparCampos = () => {
-    setMedicamento("");
-    setDescricao("");
-    setConcentracao("");
-    set_DadosMedicamentos({});
-    setTipoMedicamentoId(0);
-    setUnidadeId(0);
+    set_DadosMedicamentos({identificacao: "", descricao: "", unidadeId: 0, concentracao: "", tipoMedicamentoId: 0, associacao: false, inativo: false});
   };
 
   const onSubmit = () => {
@@ -157,12 +107,7 @@ const AddMedicamentos = ({ handleReturn, dadosEdicao = [] }) => {
           if (result.status !== 200)
             throw new Error("Houve um erro ao tentar editar o medicamento!");
   
-          showMessage(
-            "Sucesso",
-            "Medicamento editado com sucesso!",
-            "success",
-            () => {handleReturn()}
-          );
+          showMessage( "Sucesso", "Medicamento editado com sucesso!", "success", () => {handleReturn()});
           setLoading(false);
           handleLimparCampos();
         })
@@ -193,20 +138,26 @@ const AddMedicamentos = ({ handleReturn, dadosEdicao = [] }) => {
         </Col>
       </Row>
 
-      <Row className="filtros">
+      <Row>
         <Col md="4">
-          <Form.Group className="mb-3">
+          <Form.Group className="mb-1">
             <Form.Label>
               <span className="text-danger">*</span> Medicamento
             </Form.Label>
             <Form.Control
               type="text"
               placeholder="Medicamento"
-              value={medicamento}
-              onChange={(e) => {
-                handleMedicamentoChange(e);
-              }}
+              value={_dadosMedicamentos?.identificacao}
+              onChange={(e) => handleDadosMedicamentoChange(e, "identificacao")}
               isInvalid={!!errors.identificacao}
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formBasicCheckbox">
+            <Form.Check 
+              type="checkbox" 
+              label="Associação" 
+              checked={_dadosMedicamentos?.associacao} 
+              onChange={(e) => handleDadosMedicamentoChange(e, "associacao")}
             />
           </Form.Group>
         </Col>
@@ -216,12 +167,10 @@ const AddMedicamentos = ({ handleReturn, dadosEdicao = [] }) => {
               <span className="text-danger">*</span> Concentração
             </Form.Label>
             <Form.Control
-              type="number"
-              placeholder="50"
-              value={concentracao}
-              onChange={(e) => {
-                handleConcentracaoChange(e);
-              }}
+              type={_dadosMedicamentos?.associacao ? "text" : "number"}
+              placeholder={_dadosMedicamentos?.associacao ? "Concentração + Concentração" : "Concentração"}
+              value={_dadosMedicamentos?.concentracao}
+              onChange={(e) => handleDadosMedicamentoChange(e, "concentracao")}
               isInvalid={errors.concentracao}
             />
           </Form.Group>
@@ -233,8 +182,8 @@ const AddMedicamentos = ({ handleReturn, dadosEdicao = [] }) => {
             </Form.Label>
             <Form.Select
               aria-label="Default select example"
-              onChange={(e) => handleUnidadeChange(e)}
-              value={unidadeId}
+              value={_dadosMedicamentos?.unidadeId}
+              onChange={(e) => handleDadosMedicamentoChange(e, "unidadeId")}
               isInvalid={!!errors.unidadeId}
             >
               <option value={0}>Selecione</option>
@@ -252,10 +201,8 @@ const AddMedicamentos = ({ handleReturn, dadosEdicao = [] }) => {
             <Form.Control
               type="text"
               placeholder="Descrição"
-              value={descricao}
-              onChange={(e) => {
-                handleDescricaoChange(e);
-              }}
+              value={_dadosMedicamentos?.descricao}
+              onChange={(e) => handleDadosMedicamentoChange(e, "descricao")}
             />
           </Form.Group>
         </Col>
@@ -266,8 +213,8 @@ const AddMedicamentos = ({ handleReturn, dadosEdicao = [] }) => {
             </Form.Label>
             <Form.Select
               aria-label="Default select example"
-              value={tipoMedicamentoId}
-              onChange={(e) => handleTipoChange(e)}
+              value={_dadosMedicamentos?.tipoMedicamentoId}
+              onChange={(e) => handleDadosMedicamentoChange(e, "tipoMedicamentoId")}
               isInvalid={!!errors.tipoMedicamentoId}
             >
               <option value={0}>Selecione</option>
@@ -275,6 +222,24 @@ const AddMedicamentos = ({ handleReturn, dadosEdicao = [] }) => {
                 <option key={index} value={m.id}>
                   {m.identificacao}
                 </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+        </Col>
+        <Col md="4">
+          <Form.Group className="mb-3">
+            <Form.Label>
+              <span className="text-danger">*</span> Status
+            </Form.Label>
+            <Form.Select
+              aria-label="Default select example"
+              value={_dadosMedicamentos?.status}
+              onChange={(e) => handleDadosMedicamentoChange(e, "status")}
+              isInvalid={!!errors.status}
+              >
+              <option value={""}>Selecione</option>
+              {listaStatus?.map((m, index) => (
+                <option key={index} value={m}>{m}</option>
               ))}
             </Form.Select>
           </Form.Group>

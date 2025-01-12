@@ -20,9 +20,7 @@ const AddPacientes = ({ handleReturn, dadosEdicao = [] }) => {
   const api = useApi();
   const [dadosPaciente, setDadosPaciente] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({
-    identificacao: false,
-  });
+  const [errors, setErrors] = useState({});
   
   // Campos a serem validados
   const campos = [
