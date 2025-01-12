@@ -19,40 +19,51 @@ namespace authentication_jwt.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<ActionResult<dynamic>> Authenticate([FromBody] Usuario model)
+        public async Task<ActionResult<dynamic>> Authenticate([FromBody] UsuarioDTO model)
         {
             try
             {
                 // Recupera o usuário
                 var user = await _dbContext.Usuarios.Where(x => x.Email == model.Email && x.Senha == model.Senha).FirstOrDefaultAsync();
+                UsuarioDTO _user = new UsuarioDTO()
+                {
+                    Id = user.Id,
+                    Nome = user.Nome,
+                    Perfil = user.Perfil,
+                    Email = user.Email,
+                    Senha = user.Senha,
+                    PacienteId = 0
+                };
+
                 // Verifica se o usuário existe
                 if (user == null)
                     return NotFound(new { message = "Usuário ou senha inválidos" });
 
+                // Pegar id caso o usuário seja paciente
+                if (user.Perfil == "Paciente")
+                {
+                    var paciente = await _dbContext.Pacientes.Where(x => x.UsuariosId == user.Id).AsNoTracking().FirstOrDefaultAsync();
+                    if (paciente != null)
+                        _user.PacienteId = paciente.Id;
+                }
+                
                 // Gera o Token
-                var token = TokenService.GenerateToken(user);
+                var token = TokenService.GenerateToken(_user);
 
                 // Oculta a senha
                 user.Senha = "";
                 user.Email = model.Email;
 
-                long paciente_Id = 0;
-                if (user.Perfil == "Paciente")
-                {
-                    var paciente = await _dbContext.Pacientes.Where(x => x.UsuariosId == user.Id).AsNoTracking().FirstOrDefaultAsync();
-                    if (paciente != null)
-                        paciente_Id = paciente.Id;
-                }
 
                 // Retorna os dados encapsulados em um ActionResult
                 UsuarioAutenticadoDTO usuarioAutenticado = new UsuarioAutenticadoDTO
                 {
-                    Usuario_Id = user.Id,
-                    Nome = user.Nome,
-                    Email = user.Email,
-                    Perfil = user.Perfil,
+                    Usuario_Id = _user.Id.Value,
+                    Nome = _user.Nome,
+                    Email = _user.Email,
+                    Perfil = _user.Perfil,
                     Token = token,
-                    Paciente_Id = paciente_Id
+                    Paciente_Id = _user.PacienteId
                 };
                 
                 return Ok(usuarioAutenticado);

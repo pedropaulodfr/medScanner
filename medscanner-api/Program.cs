@@ -28,6 +28,8 @@ builder.Services.AddCors(options => {
     });
 });
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddControllers();
 
 var key = Encoding.ASCII.GetBytes(authentication_jwt.Settings.Secret);
@@ -67,6 +69,7 @@ builder.Services.AddScoped<CartaoControleService>();
 builder.Services.AddScoped<DashboardService>();
 builder.Services.AddScoped<CepService>();
 builder.Services.AddScoped<PacientesService>();
+builder.Services.AddScoped<AcessoService>();
 builder.Services.AddScoped<UsuariosService>();
 
 var app = builder.Build();

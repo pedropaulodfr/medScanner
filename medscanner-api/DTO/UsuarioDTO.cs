@@ -14,11 +14,11 @@ namespace authentication_jwt.DTO
     {
         public long? Id { get; set; }
 
-        public string? Perfil { get; set; } = null!;
+        public string? Perfil { get; set; }
 
-        public string? Nome { get; set; } = null!;
+        public string? Nome { get; set; }
 
-        public string? Email { get; set; } = null!;
+        public string? Email { get; set; }
 
         public string? ImagemPerfil { get; set; }
 
@@ -26,6 +26,8 @@ namespace authentication_jwt.DTO
 
         public string? Ativo { get; set; }
         public string? Senha { get; set; }
+        public string? Token { get; set; }
+        public long? PacienteId { get; set; }
         public PacienteDTO? Paciente { get; set; }
     }
 }

@@ -7,16 +7,23 @@ namespace authentication_jwt.Services
     public class MedicamentosService
     {
         private readonly AppDbContext _dbContext;
+        private readonly AcessoService _acesso;
 
         // Construtor para injetar o AppDbContext
-        public MedicamentosService(AppDbContext dbContext)
+        public MedicamentosService(AppDbContext dbContext, AcessoService acesso)
         {
             _dbContext = dbContext;
+            _acesso = acesso;
         }
 
         public async Task<List<MedicamentoDTO>> GetAll()
         {
-            List<Medicamento> medicamentos = await _dbContext.Medicamentos.ToListAsync();
+            List<Medicamento> medicamentos = new List<Medicamento>();
+            
+            if(_acesso.Perfil == "Admin")
+                medicamentos = await _dbContext.Medicamentos.AsNoTracking().ToListAsync();
+            else
+                medicamentos = await _dbContext.Medicamentos.Where(x => x.Inativo != true).AsNoTracking().ToListAsync();
 
             List<MedicamentoDTO> retorno = medicamentos.Select(m => new MedicamentoDTO
             {
@@ -29,7 +36,8 @@ namespace authentication_jwt.Services
                 TipoMedicamento = (_dbContext.TipoMedicamentos.Where(tm => tm.Id == m.TipoMedicamentoId).FirstOrDefault()).Descricao,
                 TipoMedicamentoId = m.TipoMedicamentoId,
                 Associacao = m.Associacao,
-                Inativo = m.Inativo
+                Inativo = m.Inativo,
+                Status = m.Inativo == true ? "Inativo" : "Ativo"
             }).ToList();
 
             return retorno;
@@ -50,7 +58,7 @@ namespace authentication_jwt.Services
                     Concentracao = model.Concentracao,
                     UnidadeId = model.UnidadeId,
                     Associacao = model.Associacao,
-                    Inativo = model.Inativo,
+                    Inativo = model.Status == "Inativo" ? true : false,
                 };
 
                 await _dbContext.AddAsync(medicamento);
@@ -78,7 +86,7 @@ namespace authentication_jwt.Services
                 existMedicamento.TipoMedicamentoId = model.TipoMedicamentoId.Value;
                 existMedicamento.UnidadeId = model.UnidadeId;
                 existMedicamento.Associacao = model.Associacao;
-                existMedicamento.Inativo = model.Inativo;
+                existMedicamento.Inativo = model.Status == "Inativo" ? true : false;
 
                 await _dbContext.SaveChangesAsync();
 

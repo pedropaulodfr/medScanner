@@ -2,6 +2,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using authentication_jwt.DTO;
 using authentication_jwt.Models;
 using Microsoft.IdentityModel.Tokens;
 
@@ -9,7 +10,7 @@ namespace authentication_jwt.Services
 {
     public static class TokenService
     {
-        public static string GenerateToken(Usuario user)
+        public static string GenerateToken(UsuarioDTO user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(Settings.Secret);
@@ -18,7 +19,10 @@ namespace authentication_jwt.Services
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, user.Nome.ToString()),
-                    new Claim("Perfil", user.Perfil.ToString())
+                    new Claim("Perfil", user.Perfil.ToString()),
+                    new Claim("Email", user.Email.ToString()),
+                    new Claim("UsuarioId", user.Id.ToString()),
+                    new Claim("PacienteId", user.PacienteId.ToString()),
                 }),
                 Expires = DateTime.UtcNow.AddHours(Settings.ExpiryTimeInHours),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
