@@ -12,7 +12,7 @@ namespace authentication_jwt.DTO
         public string Medicamento { get; set; }
         public long MedicamentoId { get; set; }
 
-        public int? Concentracao { get; set; }
+        public string? Concentracao { get; set; }
         public string? Unidade { get; set; }
         public long? Quantidade { get; set; }
         public string? Tipo { get; set; }

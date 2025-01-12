@@ -13,9 +13,13 @@ public partial class Medicamento
 
     public long TipoMedicamentoId { get; set; }
 
-    public int? Concentracao { get; set; }
+    public string? Concentracao { get; set; }
 
     public long? UnidadeId { get; set; }
+
+    public bool? Associacao { get; set; }
+
+    public bool? Inativo { get; set; }
 
     public virtual ICollection<CartaoControle> CartaoControles { get; } = new List<CartaoControle>();
 

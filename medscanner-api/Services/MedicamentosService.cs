@@ -27,7 +27,9 @@ namespace authentication_jwt.Services
                 Unidade = (_dbContext.Unidades.Where(u => u.Id == m.UnidadeId).FirstOrDefault()).Identificacao,
                 UnidadeId = m.UnidadeId,
                 TipoMedicamento = (_dbContext.TipoMedicamentos.Where(tm => tm.Id == m.TipoMedicamentoId).FirstOrDefault()).Descricao,
-                TipoMedicamentoId = m.TipoMedicamentoId
+                TipoMedicamentoId = m.TipoMedicamentoId,
+                Associacao = m.Associacao,
+                Inativo = m.Inativo
             }).ToList();
 
             return retorno;
@@ -45,8 +47,10 @@ namespace authentication_jwt.Services
                     Identificacao = model.Identificacao,
                     Descricao = model.Descricao ?? "",
                     TipoMedicamentoId = model.TipoMedicamentoId.Value,
-                    Concentracao = Int32.Parse(model.Concentracao),
-                    UnidadeId = model.UnidadeId
+                    Concentracao = model.Concentracao,
+                    UnidadeId = model.UnidadeId,
+                    Associacao = model.Associacao,
+                    Inativo = model.Inativo,
                 };
 
                 await _dbContext.AddAsync(medicamento);
@@ -70,9 +74,11 @@ namespace authentication_jwt.Services
                 
                 existMedicamento.Identificacao = model.Identificacao;
                 existMedicamento.Descricao = model.Descricao;
-                existMedicamento.Concentracao = Int32.Parse(model.Concentracao);
+                existMedicamento.Concentracao = model.Concentracao;
                 existMedicamento.TipoMedicamentoId = model.TipoMedicamentoId.Value;
                 existMedicamento.UnidadeId = model.UnidadeId;
+                existMedicamento.Associacao = model.Associacao;
+                existMedicamento.Inativo = model.Inativo;
 
                 await _dbContext.SaveChangesAsync();
 

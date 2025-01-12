@@ -6,10 +6,6 @@ namespace authentication_jwt.Models;
 
 public partial class AppDbContext : DbContext
 {
-    public AppDbContext()
-    {
-    }
-
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
     {
@@ -56,6 +52,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Medicamento>(entity =>
         {
+            entity.Property(e => e.Concentracao)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.Descricao)
                 .HasMaxLength(100)
                 .IsUnicode(false);

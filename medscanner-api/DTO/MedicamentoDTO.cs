@@ -15,5 +15,7 @@ namespace authentication_jwt.DTO
         public string? TipoMedicamento { get; set; }
         public long? UnidadeId { get; set; }
         public string? Unidade { get; set; }
+        public bool? Associacao { get; set; }
+        public bool? Inativo { get; set; }
     }
 }
